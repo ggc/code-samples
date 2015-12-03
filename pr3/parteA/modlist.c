@@ -7,6 +7,7 @@
 #include <linux/ftrace.h>
 #include <linux/list.h>
 #include <linux/list_sort.h>
+#include <linux/spinlock.h>
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Kernel Module - FDI-UCM");
@@ -21,6 +22,7 @@ typedef struct {
   int data;
   struct list_head links;
 }list_item_t;
+DEFINE_SPINLOCK(sp);
 
 char funcion[10];
 int valor;
@@ -116,6 +118,15 @@ static ssize_t modlist_write(struct file *filp, const char __user *buf, size_t l
     }
   }
     
+  if(strcmp(modlist, "count\n")==0){
+    int count = 0;
+    trace_printk("\nEntro count\n");
+    list_for_each_safe(cur_node,aux, &myList){
+      item = list_entry(cur_node, list_item_t, links);
+      count++;
+    }
+    trace_printk("\n Count=%d\n",count);
+  }
    
   if(strcmp(modlist, "sort\n")==0){
 
