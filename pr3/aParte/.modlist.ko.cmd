@@ -1,0 +1,1 @@
+cmd_/home/kernel/codeHere/pr3/parteA/modlist.ko := ld -r -m elf_x86_64 -T /var/tmp/linux-3.14.1/scripts/module-common.lds --build-id  -o /home/kernel/codeHere/pr3/parteA/modlist.ko /home/kernel/codeHere/pr3/parteA/modlist.o /home/kernel/codeHere/pr3/parteA/modlist.mod.o
