@@ -42,18 +42,17 @@ static ssize_t modlist_read(struct file *filp, char __user *buf, size_t len, lof
   if ((*off) > 0) 
     return 0;
 
-	spin_lock(&spin);
+spin_lock(&spin);
   list_for_each(cur_node, &myList){
     item = list_entry(cur_node, list_item_t, links);
     //trace_printk("%d\n", item->data);
     sprintf(strValue, " %d", item->data); //en arg1 meter ar2 donde lo de arg2 es ar3
     strcat(modlist, strValue); //Concatenar el subsegmento a modlist
     strcat(modlist, "\n"); //Concatena salto de linea
-  }
-	
+  }	
   strcat(modlist, end); //anadir EOF
-
 spin_unlock(&spin);
+
   nr_bytes=strlen(modlist); //Formada la cadena se mide
     
   if (len<nr_bytes)
@@ -83,9 +82,9 @@ static ssize_t modlist_write(struct file *filp, const char __user *buf, size_t l
 
   if (copy_from_user( &modlist[0], buf, len ))  
     return -EFAULT;
-spin_lock(&spin);
+  spin_lock(&spin);
   strcat(modlist, "\0"); //anadir EOF
-spin_unlock(&spin);
+  spin_unlock(&spin);
 
   if(sscanf(modlist, "add %d", &valor)){ 
     trace_printk("\nEntro añadir dato %d\n", valor);
@@ -107,7 +106,6 @@ spin_lock(&spin);
       trace_printk("\nEliminado nodo\n");
     }
 spin_unlock(&spin);
-   
   }
 
   if(sscanf(modlist, "remove %d", &valor)){
@@ -117,12 +115,12 @@ spin_lock(&spin);
       item = list_entry(cur_node, list_item_t, links);
       if(item->data == valor){
 	list_del(&item->links);
-spin_unlock(&spin);
 	trace_printk("\nEliminado nodo\n");
       }
     }
+spin_unlock(&spin);    
   }
-    
+  
   (*off)+=len;
 	
   return len;
