@@ -24,6 +24,13 @@ void cleanup_module(void){
 /* Se invoca al hacer open() de entrada /proc */
 static int fifoproc_open(struct inode * inode, struct file * fd){
 
+  if(file->f_mode & FMODE_READ){ //El consumidor abre el FIFO
+    
+
+  } else{ //El productor abre el FIFO
+
+
+  }
  return 0;
 }
 /* Se invoca al hacer close() de entrada /proc */
