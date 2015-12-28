@@ -3,16 +3,13 @@
 #include <linux/proc_fs.h>
 #include <linux/string.h>
 #include <linux/vmalloc.h>
-#include <linux/init.h>
 #include <asm-generic/uaccess.h>
 #include <asm-generic/errno.h>
 #include <linux/semaphore.h>
 #include "cbuffer.h"
+#define CBUF_SIZE 50
 
-
-
-//MODULE_LICENSE("GPL");
-
+static char *kbuf;
 static struct proc_dir_entry *proc_entry;
 cbuffer_t* cbuffer;
 int prod_count = 0;
@@ -28,15 +25,16 @@ int nr_cons_waiting=0;
 /* Se invoca al hacer open() de entrada /proc */
 static int fifoproc_open(struct inode * inode, struct file *fd){
 
-  printk("fifoopen\n");  
+  
   if(fd->f_mode & FMODE_READ){ //El consumidor abre el FIFO
-    //Traduccion START
-    if(down_interruptible(&mtx)) //Lock
+    printk("FIFO read open\n"); 
+   
+    // Wait
+    if(down_interruptible(&mtx))
       return -EINTR;
     while(prod_count==0 && nr_prod_waiting==0) {
       nr_cons_waiting++;
       up(&mtx);
-      //Codigo de seguridad//
       if (down_interruptible(&sem_prodReady)){
 	down(&mtx);
 	nr_cons_waiting--;
@@ -45,19 +43,30 @@ static int fifoproc_open(struct inode * inode, struct file *fd){
       }
       if (down_interruptible(&mtx))
 	return -EINTR;
-      //Traduccion END
     }
-    nr_cons_waiting--;
+    up(&mtx);
+    //-Wait
+    
     cons_count++; 
-    up(&mtx); //Unlock
+
+    // Signal
+    if(down_interruptible(&mtx))
+      return -EINTR;
+    if(nr_cons_waiting>0){
+      up(&sem_consReady);
+      nr_cons_waiting--;
+    }
+    up(&mtx);
+    //-Signal
+
   }else{ //El productor abre el FIFO
-    //Traduccion START
-    if(down_interruptible(&mtx)) //Lock
+    printk("FIFO write open\n");  
+    // Wait
+    if(down_interruptible(&mtx))
       return -EINTR;
     while(cons_count==0 && nr_cons_waiting==0) {
       nr_prod_waiting++;
       up(&mtx);
-      //Codigo de seguridad//
       if (down_interruptible(&sem_consReady)){
 	down(&mtx);
 	nr_prod_waiting--;
@@ -66,46 +75,60 @@ static int fifoproc_open(struct inode * inode, struct file *fd){
       }
       if (down_interruptible(&mtx))
 	return -EINTR;
-      //Traduccion END
     }
-    nr_prod_waiting--;
-    prod_count++; 
-    up(&mtx); //Unlock
+    up(&mtx);
+    //-Wait
+
+    prod_count++;
+ 
+    // Signal
+    if (down_interruptible(&mtx))
+      return -EINTR;
+    if(nr_prod_waiting>0){
+      up(&sem_prodReady);  
+      nr_prod_waiting--;
+    }
+    up(&mtx);
+    //-Signal
   }   
+  //test   insert_cbuffer_t(cbuffer,'W');
   return 0;
 }
+
 /* Se invoca al hacer close() de entrada /proc */
 static int fifoproc_release(struct inode * inode, struct file * fd){
   
-  printk("fiforelease\n");
+  printk("FIFOrelease\n");
   if(fd->f_mode & FMODE_READ){ //El consumidor cierra el FIFO
-    down_interruptible(&mtx);
+    if (down_interruptible(&mtx))
+      return -EINTR;
     cons_count--;
     up(&mtx);
   }else{
-    down_interruptible(&mtx); //El productor cierra el FIFO
-    prod_count++;
+    if(down_interruptible(&mtx)) //El productor cierra el FIFO
+      return -EINTR;
+    prod_count--;
     up(&mtx);
   }
   return 0;
 }
+
 /* Se invoca al hacer read() de entrada /proc */
-static ssize_t fifoproc_read(struct file * fd, char * rbuffer, size_t size, loff_t * offset){
-  //if(nr_gaps_cbuffer_t(cbuffer)<size)
+static ssize_t fifoproc_read(struct file * fd, char * buffer, size_t size, loff_t * offset){
 
-  char kbuf[51];
+  char kbuf[CBUF_SIZE+1];
   int nr_bytes=0;
-  char * item;
 
-
-  printk("fiforead\n");  
-  item = vmalloc(sizeof(char));
-  if(offset>0)
+  printk("FIFO read\n");  
+  if((*offset)>0)
     return 0;
+
+  // Wait
   if(down_interruptible(&mtx)){
     return -EINTR;
   }
-  while(size_cbuffer_t(cbuffer)<size){
+  //Si solicia $size y hay menos elem, entra.
+  while( size_cbuffer_t(cbuffer)<size ){
     nr_cons_waiting++;
     up(&mtx);
     if (down_interruptible(&sem_cons)){
@@ -119,132 +142,124 @@ static ssize_t fifoproc_read(struct file * fd, char * rbuffer, size_t size, loff
       return -EINTR;
     }
   }
-
-  
-  item = head_cbuffer_t(cbuffer);
-  remove_cbuffer_t(cbuffer);
-  printk("printk %s",item);
-  if (nr_prod_waiting>0)
-    {
-      up(&sem_prod);
-      nr_prod_waiting--;
-    }
-
   up(&mtx);
-
-  nr_bytes=sprintf(kbuf, "%s",item);
-
-  vfree(item);
-
-  if (size < nr_bytes)
-    return -ENOSPC;
+  //-Wait
   
-  if (copy_to_user(rbuffer,kbuf,nr_bytes))
-    return -EINVAL;
-   
-  (*offset)+=nr_bytes;
+  nr_bytes=size;
+  remove_items_cbuffer_t(cbuffer, kbuf, size);
 
+  //copy_from_user(dest, orig, len)
+  if (copy_to_user(buffer, &kbuf[0], nr_bytes))
+    return -EINVAL;
+
+  (*offset)+=nr_bytes;
+  
+  // Signal
+  if (down_interruptible(&mtx))
+    return -EINTR;
+  if (nr_prod_waiting>0){
+    up(&sem_prod);
+    nr_prod_waiting--;
+  }
+  up(&mtx);
+  //-Signal
+  
   return nr_bytes;
 }
+
 /* Se invoca al hacer write() de entrada /proc */
-static ssize_t fifoproc_write(struct file * fd, const char * wbuffer, size_t size, loff_t * offset){
-  char kbuf[51];
-  char val=' ';
-  int* item=NULL;
+static ssize_t fifoproc_write(struct file * fd, const char *buffer, size_t size, loff_t * offset){
 
-
-  printk("fifowrite\n");
-  if (size > 50) {
-    return -ENOSPC;
-  }
-  if (copy_from_user( kbuf, wbuffer, size )) {
-    return -EFAULT;
-  }
-  //strcat(kbuf, '\0');
-  *offset+=size;
-
-
-  if (sscanf(kbuf,"%c",&val)!=1){
-    return -EINVAL;
-  }
-
-  //item=vmalloc(sizeof(char));
-  //item=val;
-
-  if(down_interruptible(&mtx)){
-    vfree(item);
-    return -EINTR;
-  }
-  while(nr_gaps_cbuffer_t(cbuffer) < size && cons_count <= 0){
-   
-    printk("nr_prod_waiting\n"); 
-    nr_prod_waiting++;
-    up(&mtx);
-    if(down_interruptible(&sem_prod)){
-      down(&mtx);
-      vfree(item);
-      nr_prod_waiting--;
-      up(&mtx);
-      return -EINTR;
-    }
+    char kbuf[CBUF_SIZE+1];
+  
+    if((*offset) > 0)
+      return 0;
+    printk("FIFOwrite\n");
+  
+    // Wait
     if(down_interruptible(&mtx)){
-      vfree(item);
       return -EINTR;
     }
-  }
+    while(nr_gaps_cbuffer_t(cbuffer) < size && cons_count <= 0){
+   
+      printk("nr_prod_waiting\n"); 
+      nr_prod_waiting++;
+      up(&mtx);
+      if(down_interruptible(&sem_prod)){
+	down(&mtx);
+	nr_prod_waiting--;
+	up(&mtx);
+	return -EINTR;
+      }
+      if(down_interruptible(&mtx))
+	return -EINTR;
+    }//-Wait
+
+    //copy_from_user(dest, orig, len)
+    if (copy_from_user( kbuf, buffer, size )) {
+      return -EFAULT;
+    }
+
+    kbuf[size]='\0';
+    printk(KERN_ALERT "kbuf: >%s<\n",kbuf);
+    *offset+=size;
   
-  printk("fifo preinsercion %s\n",val);
+    insert_items_cbuffer_t(cbuffer, kbuf, size); //item
 
-  insert_cbuffer_t(cbuffer, val); //item
+    // Signal
+    if(down_interruptible(&mtx))
+      return -EINTR;
+    if(nr_cons_waiting>0){
+      up(&sem_cons);
+      nr_cons_waiting--;
+    }
+    up(&mtx);
+    //-Signal
 
-  if(nr_cons_waiting>0){
-    up(&sem_cons);
-    nr_cons_waiting--;
+    return size;
   }
-
-  up(&mtx);
-
-  return size;
-}
  
-static const struct file_operations proc_entry_fops = {
-  .open = fifoproc_open,
-  .release = fifoproc_release,
-  .read = fifoproc_read,
-  .write = fifoproc_write,    
-};
+  static const struct file_operations proc_entry_fops = {
+    .open = fifoproc_open,
+    .release = fifoproc_release,
+    .read = fifoproc_read,
+    .write = fifoproc_write,    
+  };
 
-/* Funciones de inicialización y descarga del módulo */
-int init_fifoproc_module(void){
-  sema_init(&mtx,1);
-  sema_init(&sem_prod,0);
-  sema_init(&sem_cons,0);
-  sema_init(&sem_consReady,0);
-  sema_init(&sem_prodReady,0);
-  cbuffer = create_cbuffer_t(50);
-  nr_prod_waiting=0;
-  nr_cons_waiting=0;
-  prod_count=0;
-  cons_count=0;
+  /* Funciones de inicialización y descarga del módulo */
+  int init_fifoproc_module(void){
+    kbuf = (char *)vmalloc( CBUF_SIZE );/////
+    sema_init(&mtx,1);
+    sema_init(&sem_prod,0);
+    sema_init(&sem_cons,0);
+    sema_init(&sem_consReady,0);
+    sema_init(&sem_prodReady,0);
+    cbuffer = create_cbuffer_t(CBUF_SIZE);
+    nr_prod_waiting=0;
+    nr_cons_waiting=0;
+    prod_count=0;
+    cons_count=0;
 
-  if(!cbuffer)
-    return -ENOMEM;
-
-  proc_entry = proc_create_data("modfifo",0666, NULL, &proc_entry_fops,NULL);
+    if(!cbuffer)
+      return -ENOMEM;
+    memset(kbuf,0,CBUF_SIZE);//////
+    proc_entry = proc_create_data("modfifo",0666, NULL, &proc_entry_fops,NULL);
   
-  if(proc_entry==NULL){
-    destroy_cbuffer_t(cbuffer);
-    printk(KERN_INFO "prodcons: Can't create /proc entry\n");
-    return -ENOMEM;
-  } else {
-    printk(KERN_INFO "prodcons: Module loaded\n");
+    if(proc_entry==NULL){
+      vfree(kbuf); //////
+      destroy_cbuffer_t(cbuffer);
+      printk(KERN_INFO "modfifo: Can't create /proc entry\n");
+      return -ENOMEM;
+    } else {
+      printk(KERN_INFO "modfifo: Module loaded\n");
+    }
+    return 0;
   }
-  return 0;
-}
-void cleanup_fifoproc_module(void){
-  remove_proc_entry("modfifo", NULL);
-  destroy_cbuffer_t(cbuffer);
-}
+  void cleanup_fifoproc_module(void){
+    vfree(kbuf); //////
+    remove_proc_entry("modfifo", NULL);
+    destroy_cbuffer_t(cbuffer);
+  }
 
-module_init( init_fifoproc_module );
-module_exit( cleanup_fifoproc_module );
+  module_init( init_fifoproc_module );
+  module_exit( cleanup_fifoproc_module );

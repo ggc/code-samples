@@ -1,0 +1,49 @@
+mutex mtx
+condvar prod, cons, prodReady, consReady
+int nprod=0,ncons=0 //n de prod/cons abiertos
+cbuffer_t cbuffer
+
+fifoproc_open("R"){
+  while(no hay escritores)
+    cond_wait(prodReady)
+  ncons++ //un nuevo consumidor ha aparecido!
+  cond_signal(consReady)
+}
+
+fifoproc_write(buff, len){
+  //copia de buffer de usuario a kernel
+  //y comprobacion de espacio
+  //La escritura es exclusiva entre si
+  lock(mtx) //*Usar para multiples escritores
+  
+  while(no haya hueco en cbuffer AND haya algun consumidor)
+    cond_wait(prod,mtx)
+  
+  lock(mtx)
+  insertar(cbuffer)
+  unlock(mtx)  
+
+  cond_signal(cons)
+  unlock(mtx) //*
+}
+
+fifoproc_read(buff, len){
+  //comprobacion de tamanyos
+  lock(mtx) //*al contrario que los tipicos lectores
+  	    //aqui se consume, luego se usa el Lock
+  while(no hayan datos AND haya productores)
+    cont_wait(cons,mtx)
+  
+  lock(mtx)
+  eliminar(cbuffer)
+  unlock(mtx)
+
+  cond_signal(prod)
+  unlock(mtx) //*
+}
+
+fifoproc_release{
+  lock(mtx)
+  cons--
+  unlock(mtx)
+}
