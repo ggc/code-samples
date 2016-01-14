@@ -17,22 +17,30 @@ int cons_count = 0;
 struct semaphore mtx;
 struct semaphore sem_prod;
 struct semaphore sem_cons;
-struct semaphore sem_prodReady;
-struct semaphore sem_consReady;
 int nr_prod_waiting=0;
 int nr_cons_waiting=0;
 
 /* Se invoca al hacer open() de entrada /proc */
 static int fifoproc_open(struct inode * inode, struct file *fd){
-
+  down_interruptible(&mtx);
   
   if(fd->f_mode & FMODE_READ){ //El consumidor abre el FIFO
     printk("FIFO read open\n"); 
-   
-    // Wait
-    if(down_interruptible(&mtx))
+    cons_count++;
+    // Signal
+    if(down_interruptible(&mtx)) //Prescindible?>
       return -EINTR;
-    while(prod_count==0 && nr_prod_waiting==0) {
+    if(nr_prod_waiting>0){
+      up(&sem_prod);
+      nr_prod_waiting--;
+    }
+    up(&mtx);//<?
+    //-Signal
+
+    // Wait
+    if(down_interruptible(&mtx)) //Prescindible?>
+      return -EINTR;
+    while(prod_count==0 && nr_prod_waiting==0) { //Arreglar
       nr_cons_waiting++;
       up(&mtx);
       if (down_interruptible(&sem_prodReady)){
@@ -44,27 +52,28 @@ static int fifoproc_open(struct inode * inode, struct file *fd){
       if (down_interruptible(&mtx))
 	return -EINTR;
     }
-    up(&mtx);
+    up(&mtx);//<?
     //-Wait
     
-    cons_count++; 
-
-    // Signal
-    if(down_interruptible(&mtx))
-      return -EINTR;
-    if(nr_cons_waiting>0){
-      up(&sem_consReady);
-      nr_cons_waiting--;
-    }
-    up(&mtx);
-    //-Signal
-
   }else{ //El productor abre el FIFO
     printk("FIFO write open\n");  
-    // Wait
-    if(down_interruptible(&mtx))
+
+    prod_count++;
+ 
+    // Signal
+    if (down_interruptible(&mtx))//Quitar?
       return -EINTR;
-    while(cons_count==0 && nr_cons_waiting==0) {
+    if(nr_prod_waiting>0){
+      up(&sem_prodReady);  
+      nr_prod_waiting--;
+    }
+    up(&mtx);//quitar?
+    //-Signal
+
+    // Wait
+    if(down_interruptible(&mtx))//quitar?
+      return -EINTR;
+    while(cons_count==0 && nr_cons_waiting==0) {//arreglar?
       nr_prod_waiting++;
       up(&mtx);
       if (down_interruptible(&sem_consReady)){
@@ -76,22 +85,10 @@ static int fifoproc_open(struct inode * inode, struct file *fd){
       if (down_interruptible(&mtx))
 	return -EINTR;
     }
-    up(&mtx);
+    up(&mtx);//quitar?
     //-Wait
 
-    prod_count++;
- 
-    // Signal
-    if (down_interruptible(&mtx))
-      return -EINTR;
-    if(nr_prod_waiting>0){
-      up(&sem_prodReady);  
-      nr_prod_waiting--;
-    }
-    up(&mtx);
-    //-Signal
   }   
-  //test   insert_cbuffer_t(cbuffer,'W');
   return 0;
 }
 
