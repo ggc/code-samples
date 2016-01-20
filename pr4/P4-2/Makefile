@@ -1,5 +1,5 @@
 obj-m +=  modtimer.o  
-modtimer-objs += proctimer.o cbuffer.o
+modtimer-objs += timer.o cbuffer.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
