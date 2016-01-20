@@ -10,7 +10,7 @@ fifoproc_open(file, buffer, size, offset){
    cond_signal(prod);
    while(prod_count==0)   
      cond_wait(cons,mtx) 
-  }else { #escritor
+  }else {
    prod_count++;
    cond_signal(cons);
    while(cons_count==0)
