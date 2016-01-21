@@ -21,8 +21,10 @@ static cbuffer_t *cbuffer;
 
 // Def variables
 static char lector = false;
+static int list_items = 0;
 DEFINE_SEMAPHORE(mtx);
 DEFINE_SPINLOCK(spin);
+DEFINE_SEMAPHORE(empty);
 
 // Var de modconfig
 static unsigned long timer_period=500;
@@ -130,6 +132,7 @@ static int modtimer_release(struct inode *inode, struct file *file){
   list_for_each_safe(cur_node,aux, &lnls){
     item = list_entry(cur_node, list_item_t, links);
     list_del(&item->links);
+    list_items = list_items - 1;
   }
   //
   lector = false;
@@ -148,19 +151,33 @@ static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_
 	
   unsigned char string1[10]="";
   unsigned char string2[10];
-	
-	
+
+  if(list_items == 0){
+	up(&mtx);
+	if(down_interruptible(&empty){
+		return 0;
+	}
+  }
+
   //Borrar dato de la lista
-  trace_printk("\nEntro eliminar todo\n");
   list_for_each_safe(cur_node, aux_node, &lnls){
     item = list_entry(cur_node, list_item_t, links);
 	  
     sprintf(string2, "%in",item->data);
     strcat(string1,string2);
-	  
+
     list_del(&item->links);
-    trace_printk("\nEliminado nodo\n");
+    list_items = list_items - 1;
   }
+  length = strlen(string1);
+  up(&mtx);
+  
+  if(length < nbytes){
+  	if(copy_to_user(user, string1, length))
+		{return -EINVAL;}
+  }else{return -ENOMEM;}
+
+  return lenght;
 }
 
 
@@ -228,6 +245,7 @@ void modtimer_clean(void){
   list_for_each_safe(cur_node,aux_node, &lnls){
     item = list_entry(cur_node, list_item_t, links);
     list_del(&item->links);
+    list_items = list_items - 1;
   }
 	
 }
@@ -239,11 +257,11 @@ module_exit(modtimer_clean);
 //Function invoked when timer expires
 static void fire_timer(unsigned long data){
   static int n = 0;
+  unsigned long flags;
   unsigned int cpu=smp_processor_id();
-  //spinlock_irqsave//
   // Genera num aleatorio
   n = get_random_int() % max_random;
-
+  spin_lock_irqsave(&spin, flags);
   // Inserta el elem en cbuffer
   if(!is_full_cbuffer_t(cbuffer)){
     insert_cbuffer_t(cbuffer, n);
@@ -254,10 +272,12 @@ static void fire_timer(unsigned long data){
     //Inserta la tarea en la otra cpu
     schedule_work_on((cpu+1)%2, &work);
   }
-  //spinlock_irqrestore//
+  spin_unlock_irqrestore(&spin, flags);
   /* Re-activate the timer one second from now */
-  mod_timer( &(timer), jiffies + timer_period); 
-}//// Tarea diferida
+  mod_timer( &timer, jiffies + timer_period); 
+}
+
+//// Tarea diferida
 //Workqueue
 
 //Mueve de cbuffer a lnls
