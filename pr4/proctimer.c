@@ -15,14 +15,21 @@
 // Def structs
 static struct proc_dir_entry *proc_entry; //crea entrada /proc
 static struct timer_list timer;
-static struct work_struct *work;
-static struct list_head *lnls;
-static struct cbuffer_t *cbuffer;
+static struct work_struct work;
+//static struct list_head *lnls;
+static cbuffer_t *cbuffer;
+
 // Def variables
+static char lector = false;
+DEFINE_SEMAPHORE(mtx);
+DEFINE_SPINLOCK(spin);
+
 // Var de modconfig
 static unsigned long timer_period=500;
 static int max_random=100;
 static unsigned int emergency_threshold=90;
+
+LIST_HEAD(lnls); 
 
 //Lista enlazada
 typedef struct {
@@ -31,15 +38,29 @@ typedef struct {
 }list_item_t;
 
 
+//PROTOTIPOS
+static void fire_timer(unsigned long data);
+static void wq_function(struct work_struct *work);
+
+static ssize_t modconfig_write(struct file *file, const char __user *buffer, unsigned long count, loff_t *data);
+ssize_t modconfig_read(struct file *filp, char __user *buff, size_t len, loff_t *off);
+
+static int modtimer_open(struct inode *inode, struct file *file);
+static int modtimer_release(struct inode *inode, struct file *file);
+static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_t *offset);
+
+
 ////Funcionesstatic 
 ssize_t modconfig_read(struct file *filp, char __user *buff, size_t len, loff_t *off){
+int timer_periodms;
+int datos;
 	
   if ((*off) > 0) 
     return 0;
    
   //TIMER PERIOD EN MS
-  int timer_periodms = timer_period * 10;
-  int datos = snprintf(buff, len," timer_period_ms = %d\n emergency_threshold = %d\n max_random = %d\n", timer_periodms, emergency_threshold, max_random);
+  timer_periodms = timer_period * 10;
+  datos = snprintf(buff, len," timer_period_ms = %d\n emergency_threshold = %d\n max_random = %d\n", timer_periodms, emergency_threshold, max_random);
    
   *off+=len; 
     
@@ -76,10 +97,12 @@ static int modtimer_open(struct inode *inode, struct file *file){
   if(lector) {
     up(&mtx);
     return -EPERM;
+  }else{
+	lector = true;
   }
 
-  lector = true;
   up(&mtx);
+  
 	
   timer.expires = jiffies + timer_period;
   add_timer(&timer);
@@ -101,7 +124,7 @@ static int modtimer_release(struct inode *inode, struct file *file){
   //Terminar trabajo planificado
   flush_scheduled_work();
   //Vaciar buffer circular
-  clear_cbuffer_t(cbuffer_t);
+  remove_cbuffer_t(cbuffer);
 	
   //Vaciar lista enlazada
   list_for_each_safe(cur_node,aux, &lnls){
@@ -120,15 +143,16 @@ static int modtimer_release(struct inode *inode, struct file *file){
 static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_t *offset){
   struct list_head* cur_node=NULL;
   list_item_t *item=NULL;
+  struct list_head* aux_node=NULL;
 	
 	
-  unsigned char string1[MAX_SIZE_BUFF]="";
+  unsigned char string1[10]="";
   unsigned char string2[10];
 	
 	
   //Borrar dato de la lista
   trace_printk("\nEntro eliminar todo\n");
-  list_for_each_safe(cur_node,string1, &myList){
+  list_for_each_safe(cur_node, aux_node, &lnls){
     item = list_entry(cur_node, list_item_t, links);
 	  
     sprintf(string2, "%in",item->data);
@@ -140,21 +164,29 @@ static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_
 }
 
 
+
+static const struct file_operations proc_entry_fops_modconfig = {
+  .read = modconfig_read,
+  .write = modconfig_write,
+};
+
+static const struct file_operations proc_entry_fops_modtimer = {
+  .open = modtimer_open,
+  .release = modtimer_release,
+  .read = modtimer_read,
+};
+
 int modtimer_init(void){
 	
   int ret = 0;
-  //init LiNkedLiSt	
-  LIST_HEAD(lnls); 
+  
   // Create timer 
-  init_timer(&timer);
   // Initialize field
   timer.data=0;
   timer.function=fire_timer;
   timer.expires=jiffies + timer_period; // Activate it one second from now
   // Activate the timer for the first time
-  add_timer(&timer); 
-
-  INIT_WORK(work,wq_function);
+  init_timer(&timer);
 	
   proc_entry = proc_create( "modtimer", 0666, NULL, &proc_entry_fops_modtimer);
   if (proc_entry == NULL) {
@@ -172,14 +204,18 @@ int modtimer_init(void){
     printk(KERN_INFO "modconfig: Module loaded\n");
   }
 	
-  cbuffer = create_cbuffer_t(MAX_SIZE_BUFF);
-  INIT_WORK(&my_work, wq_function );
+  cbuffer = create_cbuffer_t(10);
+  INIT_WORK(&work, wq_function );
 	
   return ret;
 }
 
 void modtimer_clean(void){
 	
+  struct list_head* cur_node=NULL;
+  struct list_head* aux_node = NULL;
+  list_item_t *item=NULL;
+  
   remove_proc_entry("modtimer", NULL);
   printk(KERN_INFO "modtimer: Module unloaded.\n");
 	
@@ -189,24 +225,12 @@ void modtimer_clean(void){
   destroy_cbuffer_t(cbuffer);
 	
   //Vaciar lista enlazada
-  list_for_each_safe(cur_node,aux, &lnls){
+  list_for_each_safe(cur_node,aux_node, &lnls){
     item = list_entry(cur_node, list_item_t, links);
     list_del(&item->links);
   }
 	
 }
-
-
-static const struct file_operacions proc_entry_fops_modconfig = {
-  .read = modconfig_read,
-  .write = modconfig_write,
-};
-
-static const struct file_operacions proc_entry_fops_modtimer = {
-  .open = modtimer_open,
-  .release = modtimer_release,
-  .write = modtimer_write,
-};
 
 module_init(modtimer_init);
 module_exit(modtimer_clean);
@@ -228,7 +252,7 @@ static void fire_timer(unsigned long data){
   //flushworkpendingaqui//
   if(emergency_threshold<size_cbuffer_t(cbuffer)){
     //Inserta la tarea en la otra cpu
-    schedule_work_on((cpu+1)%2, work);
+    schedule_work_on((cpu+1)%2, &work);
   }
   //spinlock_irqrestore//
   /* Re-activate the timer one second from now */
@@ -248,20 +272,17 @@ static void wq_function(struct work_struct *work){
     elem++;
   }
   
-  spin_lock_irqsave(&mutex, flags);
+  spin_lock_irqsave(&spin, flags);
   elem=0;
-  while(!is_empty_cbuffer(cbuffer)){
+  while(!is_empty_cbuffer_t(cbuffer)){
     tmp[elem]->data=remove_cbuffer_t(cbuffer);
     list_add_tail(&tmp[elem]->links, &lnls);
     elem++;
   }
-  spin_unlock_irqrestore(&mutex, flags);
+  spin_unlock_irqrestore(&spin, flags);
   
   if(programaUsuarioBloqueado)
     up();
 
   
 }
-
-
-
