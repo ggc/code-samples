@@ -28,7 +28,7 @@ DEFINE_SEMAPHORE(empty);
 
 // Var de modconfig
 static unsigned long timer_period=500;
-static int max_random=100;
+static unsigned int max_random=100;
 static unsigned int emergency_threshold=90;
 
 LIST_HEAD(lnls); 
@@ -54,8 +54,8 @@ static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_
 
 ////Funcionesstatic 
 ssize_t modconfig_read(struct file *filp, char __user *buff, size_t len, loff_t *off){
-int timer_periodms;
-int datos;
+  int timer_periodms;
+  int datos;
 	
   if ((*off) > 0) 
     return 0;
@@ -100,7 +100,7 @@ static int modtimer_open(struct inode *inode, struct file *file){
     up(&mtx);
     return -EPERM;
   }else{
-	lector = true;
+    lector = true;
   }
 
   up(&mtx);
@@ -144,6 +144,7 @@ static int modtimer_release(struct inode *inode, struct file *file){
 
 
 static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_t *offset){
+  int length;
   struct list_head* cur_node=NULL;
   list_item_t *item=NULL;
   struct list_head* aux_node=NULL;
@@ -153,10 +154,9 @@ static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_
   unsigned char string2[10];
 
   if(list_items == 0){
-	up(&mtx);
-	if(down_interruptible(&empty){
-		return 0;
-	}
+    if(down_interruptible(&empty)){
+      return 0;
+    }
   }
 
   //Borrar dato de la lista
@@ -173,11 +173,11 @@ static ssize_t modtimer_read(struct file *file, char *user, size_t nbytes, loff_
   up(&mtx);
   
   if(length < nbytes){
-  	if(copy_to_user(user, string1, length))
-		{return -EINVAL;}
+    if(copy_to_user(user, string1, length))
+      {return -EINVAL;}
   }else{return -ENOMEM;}
 
-  return lenght;
+  return length;
 }
 
 
@@ -256,24 +256,27 @@ module_exit(modtimer_clean);
 //###Timer###
 //Function invoked when timer expires
 static void fire_timer(unsigned long data){
-  static int n = 0;
+  static unsigned int n = 0;
   unsigned long flags;
   unsigned int cpu=smp_processor_id();
+
   // Genera num aleatorio
-  n = get_random_int() % max_random;
+  n = (unsigned int)get_random_int() % max_random;
   spin_lock_irqsave(&spin, flags);
   // Inserta el elem en cbuffer
   if(!is_full_cbuffer_t(cbuffer)){
     insert_cbuffer_t(cbuffer, n);
   }
   
-  //flushworkpendingaqui//
-  if(emergency_threshold<size_cbuffer_t(cbuffer)){
+  //Checkea umbral
+  if(emergency_threshold<size_cbuffer_t(cbuffer)*10){
+    //Espera a que terminen las demas tareas
+    flush_scheduled_work();
     //Inserta la tarea en la otra cpu
     schedule_work_on((cpu+1)%2, &work);
   }
   spin_unlock_irqrestore(&spin, flags);
-  /* Re-activate the timer one second from now */
+  /* Reactiva el timer para timer_period depues */
   mod_timer( &timer, jiffies + timer_period); 
 }
 
@@ -286,11 +289,16 @@ static void wq_function(struct work_struct *work){
   unsigned long flags;
   list_item_t *tmp[size_cbuffer_t(cbuffer)];
   
+  //Interrumpible?
+  if(down_interruptible(&mtx)){
+    return ;//Error
+  }  
   //Reserva de memoria
   while(elem<size_cbuffer_t(cbuffer)){
     tmp[elem]=(list_item_t *)vmalloc(sizeof(list_item_t));
     elem++;
   }
+  up(&mtx);
   
   spin_lock_irqsave(&spin, flags);
   elem=0;
@@ -298,11 +306,11 @@ static void wq_function(struct work_struct *work){
     tmp[elem]->data=remove_cbuffer_t(cbuffer);
     list_add_tail(&tmp[elem]->links, &lnls);
     elem++;
+    //Se podria poner aqui el up?
   }
   spin_unlock_irqrestore(&spin, flags);
-  
-  if(programaUsuarioBloqueado)
-    up();
+  // Libera al lector
+  up(&empty);
 
   
 }

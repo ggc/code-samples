@@ -31,21 +31,21 @@ int is_full_cbuffer_t ( cbuffer_t* cbuffer );
 int is_empty_cbuffer_t ( cbuffer_t* cbuffer );
 
 /* Inserts an item at the end of the buffer */
-void insert_cbuffer_t ( cbuffer_t* cbuffer, int new_item );
+void insert_cbuffer_t ( cbuffer_t* cbuffer, unsigned int new_item );
 
 /* Inserts nr_items into the buffer */
-void insert_items_cbuffer_t ( cbuffer_t* cbuffer, const int* items, int nr_items);
+void insert_items_cbuffer_t ( cbuffer_t* cbuffer, const unsigned int* items, int nr_items);
 
 /* Removes the first element in the buffer and returns a copy of it */
-int remove_cbuffer_t ( cbuffer_t* cbuffer);
+unsigned int remove_cbuffer_t ( cbuffer_t* cbuffer);
 
 /* Removes nr_items from the buffer and returns a copy of them */
-void remove_items_cbuffer_t ( cbuffer_t* cbuffer, int* items, int nr_items);
+void remove_items_cbuffer_t ( cbuffer_t* cbuffer, unsigned int* items, int nr_items);
 
 /* Removes all items in the buffer */
 void clear_cbuffer_t (cbuffer_t* cbuffer);
 
 /* Returns a pointer to the first element in the buffer */
-int* head_cbuffer_t ( cbuffer_t* cbuffer );
+unsigned int* head_cbuffer_t ( cbuffer_t* cbuffer );
 
 #endif
