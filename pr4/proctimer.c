@@ -12,6 +12,8 @@
 #include <linux/types.h>
 #include "cbuffer.h"
 
+#define MAX_SIZE_KBUF 100
+
 // Def structs
 static struct proc_dir_entry *proc_entry; //crea entrada /proc
 static struct timer_list timer;
@@ -27,7 +29,6 @@ DEFINE_SEMAPHORE(timerReady);
 static char lector = false;
 static int list_items = 0;
 static int wq_waiting = 0;
-static char *kbuf;
 
 // Var de modconfig
 static unsigned long timer_period=HZ;
@@ -127,12 +128,17 @@ static ssize_t modtimer_read(struct file *file, char __user *buf, size_t nbytes,
   list_item_t *item=NULL;
   int length;
   unsigned char string[10];
+  char kbuf[MAX_SIZE_KBUF]="";
   
   while(1){
     printk(KERN_INFO "modtimer read\n");
   
+    if(down_interruptible(&mtx)){
+      return -EINVAL;
+    }//
     //Detener si esta vacia
     if(list_empty(&lnls)){
+      up(&timerReady);
       if(down_interruptible(&empty)){
 	return 0;
       }
@@ -148,7 +154,7 @@ static ssize_t modtimer_read(struct file *file, char __user *buf, size_t nbytes,
       list_del(&item->links);
       list_items = list_items - 1;
     }
-    strcat(kbuf,"\0");//Cuidado
+
     length = strlen(kbuf);//Cuidado
     printk(KERN_INFO "string=%s###len=%d\n",kbuf,length);
 
@@ -157,6 +163,7 @@ static ssize_t modtimer_read(struct file *file, char __user *buf, size_t nbytes,
       return -EINVAL;
     }
     printk(KERN_INFO "copytouser exitoso\n");      
+    up(&mtx);//
   }
 
   (*offset)+=nbytes;
@@ -234,36 +241,28 @@ static void fire_timer(unsigned long data){
 
 int modtimer_init(void){	
   int ret = 0;
-
-  //Reserva de memoria del buffer del kernel
-  kbuf=(char *)vmalloc(128);
-  if(!kbuf)
+  
+  //Entrada modtimer
+  proc_entry = proc_create( "modtimer", 0666, NULL, &proc_entry_fops_modtimer);
+  if (proc_entry == NULL) {
     ret = -ENOMEM;
-  else{
-    memset(kbuf,0,128);
-    //Entrada modtimer
-    proc_entry = proc_create( "modtimer", 0666, NULL, &proc_entry_fops_modtimer);
-    if (proc_entry == NULL) {
-      ret = -ENOMEM;
-      vfree(kbuf);
-      printk(KERN_INFO "modtimer: Can't create /proc entry\n");
-    } else {
-      printk(KERN_INFO "/proc/modtimer created\n");
-    }
-    //Entrada modconfig
-    proc_entry = proc_create( "modconfig", 0666, NULL, &proc_entry_fops_modconfig);
-    if (proc_entry == NULL) {
-      vfree(kbuf);
-      ret = -ENOMEM;
-      printk(KERN_INFO "modconfig: Can't create /proc entry\n");
-    } else {
-      printk(KERN_INFO "/proc/modconfig created\n");
-    }
-    
-    cbuffer = create_cbuffer_t(10);
-    INIT_LIST_HEAD(&lnls); 
-    INIT_WORK(&work, wq_function );
+    printk(KERN_INFO "modtimer: Can't create /proc entry\n");
+  } else {
+    printk(KERN_INFO "/proc/modtimer created\n");
   }
+  //Entrada modconfig
+  proc_entry = proc_create( "modconfig", 0666, NULL, &proc_entry_fops_modconfig);
+  if (proc_entry == NULL) {
+    ret = -ENOMEM;
+    printk(KERN_INFO "modconfig: Can't create /proc entry\n");
+  } else {
+    printk(KERN_INFO "/proc/modconfig created\n");
+  }
+  
+  cbuffer = create_cbuffer_t(10);
+  INIT_LIST_HEAD(&lnls); 
+  INIT_WORK(&work, wq_function );
+  
   return ret;
 }
 
@@ -273,8 +272,6 @@ void modtimer_clean(void){
   struct list_head* aux_node = NULL;
   list_item_t *item=NULL;
     
-  vfree(kbuf);
-  
   remove_proc_entry("modtimer", NULL);
   printk(KERN_INFO "modtimer: Module unloaded.\n");
 	
@@ -312,6 +309,8 @@ static void wq_function(struct work_struct *work){
     elem++;
   }
   up(&mtx);
+
+  down(&timerReady);
   
   spin_lock_irqsave(&spin, flags);
   elem=0;
