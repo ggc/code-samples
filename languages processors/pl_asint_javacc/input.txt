@@ -1,0 +1,5 @@
+num a;
+bool b
+&&
+a = 3;
+b = 5  < r
