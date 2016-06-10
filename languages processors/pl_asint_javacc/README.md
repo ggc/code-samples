@@ -1,0 +1,6 @@
+Sintax parser for:
+       num peso;
+       bool pesado
+       &&
+       peso = (45.0 * 12e-56) / -002.00;
+       pesado = (peso > 10.00) or (peso / 002 <= +04)
