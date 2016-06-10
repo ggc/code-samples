@@ -1,0 +1,77 @@
+options  {
+  STATIC=false;
+}  
+PARSER_BEGIN(AnalizadorSintactico)
+package asint;
+
+public class AnalizadorSintactico {}
+PARSER_END(AnalizadorSintactico)
+
+
+   TOKEN:{<#letra:["a"-"z","A"-"Z"]>}
+   TOKEN:{<#digito:["0"-"9"]>}
+   TOKEN:{<float:(<real>|<int>)["e","E"](<real>|<int>)>}
+   TOKEN:{<real:<int> "." <digito>+>}
+   TOKEN:{<int:(["+","-"])?(<digito>)+>}
+   SKIP:{<["\t"," ","\r","\b","\n"]>}
+  
+   TOKEN:{<amp:"&&">}
+   TOKEN:{<num:"num">}
+   TOKEN:{<bool:"bool">}
+   TOKEN:{<true:"true">}
+   TOKEN:{<false:"false">}
+   TOKEN:{<and:"and">}
+   TOKEN:{<or:"or">}
+   TOKEN:{<not:"not">}
+   TOKEN:{<id:<letra>(<letra>|<digito>|"_")*>}  
+   TOKEN:{<dot:".">}
+   TOKEN:{<semicolon:";">}
+   TOKEN:{<popen:"(">}
+   TOKEN:{<pclose:")">}
+   TOKEN:{<add:"+">}
+   TOKEN:{<sub:"-">}
+   TOKEN:{<mul:"*">}
+   TOKEN:{<div:"/">}
+   TOKEN:{<eq:"eq">}
+   TOKEN:{<ne:"ne">}
+   TOKEN:{<ge:"ge">}
+   TOKEN:{<gt:"gt">}
+   TOKEN:{<le:"le">}
+   TOKEN:{<lt:"lt">}
+   TOKEN:{<assign:"=">}
+  
+  
+  
+  
+  
+  
+  
+   void Sp()   : {} {S() <EOF>}
+   void S()    : {} {D() <amp> I()}
+   
+   void D()    : {} {T() <id> Df()}
+   void T      : {} {<num> | <bool> }
+   void Df     : {} {<semicolon> D() | {} }
+
+   void I      : {} {<id> <assign> E0() If() }
+   void If     : {} {<semicolon> I() }
+   
+   void E0     : {} {E1() E0a() } 
+   void E0a    : {} {T0() | OP0b() E0() | {} }
+   void T0     : {} {OP0a() E1() }
+   void E1     : {} {E2() E1r() }
+   void E1r    : {} {OP1() E2() E1r() | {} }
+   void E2     : {} { E3() T2() }
+   void T2     : {} { E2r() | OP2b() E3() }
+   void E2r    : {} { OP2a() E3() E2r() | {} }
+   void E3     : {} { <neg> E4() | <pos> E4() | <not> E3() | E4() }
+   void E4     : {} { <id> | <true> | <false> | <int> | <real> | <float> | <popen> E0() <pclose> }
+  
+   void OP0a   : {} { <eq> | <ne> | <le> | <lt> | <ge> | <gt> }
+   void OP0b   : {} { <or> }
+   void OP1    : {} { <add> | <sub> }
+   void OP2a   : {} { <mul> | <div> }
+   void OP2b   : {} { <and> }
+
+
+  
