@@ -1,0 +1,116 @@
+http://localhost:3000/api/locations/575af85a078ee12d2de4102a/reviews/575b66e7078ee12d2de4102b
+
+{
+	"_id" : ObjectId("575af6d8078ee12d2de41028"),
+	"name" : "Starfucks",
+	"address" : "125 Real street",
+	"rating" : 4,
+	"facilities" : [
+		"Hot drinks",
+		"Food",
+		"Premium wifi"
+	],
+	"coords" : [
+		-0.9690774,
+		50.455623
+	],
+	"openingTimes" : [
+		{
+			"days" : "Monday - Friday",
+			"opening" : "7:00am",
+			"closing" : "7:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Saturday",
+			"opening" : "8:00am",
+			"closing" : "5:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Sunday",
+			"closed" : true
+		}
+	],
+	"reviews" : [
+		{
+			"author" : "Gabriel Galan",
+			"id" : ObjectId("575af7c8078ee12d2de41029"),
+			"rating" : 5,
+			"timestamp" : ISODate("2013-07-15T22:00:00Z"),
+			"reviewText" : "What a great place. I can't say enough goodthings about it."
+		}
+		{
+			"author" : "Alan Poe",
+			"id" : ObjectId("575c6d5ba7065f2614370a05"),
+			"rating" : 3,
+			"timestamp" : ISODate("2013-07-15T22:00:00Z"),
+			"reviewText" : "Nice"
+		},
+		{
+			"author" : "Jacob dogface",
+			"id" : ObjectId("575c6d98a7065f2614370a06"),
+			"rating" : 1,
+			"timestamp" : ISODate("2015-08-31T22:00:00Z"),
+			"reviewText" : "It was good. Not enough. But good."
+		}
+	]
+}
+
+
+{
+	"_id" : ObjectId("575af85a078ee12d2de4102a"),
+	"name" : "Dragon Nest",
+	"address" : "23 Real street",
+	"rating" : 2,
+	"facilities" : [
+		"Hot drinks",
+		"Hot Food",
+		"Premium hot wifi"
+	],
+	"coords" : [
+		-0.9660774,
+		46.455623
+	],
+	"openingTimes" : [
+		{
+			"days" : "Friday - Sunday",
+			"opening" : "7:00am",
+			"closing" : "7:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Saturday",
+			"opening" : "8:00am",
+			"closing" : "5:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Monday",
+			"closed" : true
+		}
+	],
+	"reviews" : [
+		{
+			"author" : "Alan Poe",
+			"id" : ObjectId("575b66e7078ee12d2de4102b"),
+			"rating" : 3,
+			"timestamp" : ISODate("2013-07-15T22:00:00Z"),
+			"reviewText" : "Nice"
+		}
+		{
+			"author" : "Gabriel Galan",
+			"id" : ObjectId("575b66e7078ee12d2de4102b"),
+			"rating" : 3,
+			"timestamp" : ISODate("2014-04-15T22:00:00Z"),
+			"reviewText" : "At its finest"
+		}
+		{
+			"author" : "Unknown",
+			"id" : ObjectId("575b66e7078ee12d2de4102b"),
+			"rating" : 4,
+			"timestamp" : ISODate("2013-09-20T22:00:00Z"),
+			"reviewText" : "It sucks. Just a little."
+		}
+	]
+}

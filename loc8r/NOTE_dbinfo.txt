@@ -1,0 +1,1 @@
+~/Apps/mongodb-linux-x86_64-ubuntu1404-3.2.6/bin/mongorestore -h ds011664.mlab.com:11664 -d loc8r -u loc8r -p Nononon0 ~/Apps/mongodb-linux-x86_64-ubuntu1404-3.2.6/tmp/mongodump/Loc8r

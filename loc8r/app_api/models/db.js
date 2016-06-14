@@ -2,6 +2,11 @@ var mongoose = require( 'mongoose' );
 
 var dbURI = 'mongodb://localhost/Loc8r';
 
+if (process.env.NODE_ENV === 'production') {
+	// Use <'mongodb://loc8r:Nononon0@ds011664.mlab.com:11664/loc8r'> for pass
+	dbURI = process.env.MONGOLAB_URI;
+}
+
 mongoose.connect(dbURI);
 
 mongoose.connection.on('connected', function() {
