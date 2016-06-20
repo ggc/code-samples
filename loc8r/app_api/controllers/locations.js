@@ -1,28 +1,6 @@
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
 
-var sendJSONResponse = function(res, status, content){
-	res.status(status);
-	res.json(content);
-};
-
-var theEarth = (function() {
-	var earthRadius = 6371; //km
-
-	var getDistanceFromRads = function(rads) {
-		return parseFloat(rads * earthRadius);
-	};
-
-	var getRadsFromDistance = function(distance) {
-		return parseFloat(distance / earthRadius);
-	};
-
-	return {
-		getDistanceFromRads: getDistanceFromRads,
-		getRadsFromDistance: getRadsFromDistance
-	};
-})();
-
 module.exports.locationsListByDistance = function (req, res) {
 	var lng = parseFloat(req.query.lng);
 	var lat = parseFloat(req.query.lat);
@@ -43,6 +21,7 @@ module.exports.locationsListByDistance = function (req, res) {
 		});
 		return;
 	}
+	// Loc.geoNear===db.locations.geoNear(...) on db CLI
 	Loc.geoNear(point, geoOptions, function (err, results, stats){
 		var locations = [];
 		if (err) {
@@ -62,6 +41,29 @@ module.exports.locationsListByDistance = function (req, res) {
 		}
 	});
 };
+
+var theEarth = (function() {
+	var earthRadius = 6371; //km
+
+	var getDistanceFromRads = function(rads) {
+		return parseFloat(rads * earthRadius);
+	};
+
+	var getRadsFromDistance = function(distance) {
+		return parseFloat(distance / earthRadius);
+	};
+
+	return {
+		getDistanceFromRads: getDistanceFromRads,
+		getRadsFromDistance: getRadsFromDistance
+	};
+})();
+
+var sendJSONResponse = function(res, status, content){
+	res.status(status);
+	res.json(content);
+};
+
 
 module.exports.locationsCreate = function (req, res) {
 	Loc.create({
@@ -89,8 +91,8 @@ module.exports.locationsCreate = function (req, res) {
 	});
 };
 
+
 module.exports.locationsReadOne = function (req, res) {
-	//sendJSONResponse(res, 200, {"message" : "locationsReadOne acomplished"})
 	if (req.params && req.params.locationid) {
 		Loc
 			.findById(req.params.locationid)
@@ -112,6 +114,7 @@ module.exports.locationsReadOne = function (req, res) {
 		});
 	}
 };
+
 
 module.exports.locationsUpdateOne = function (req, res) {
 	if (!req.params.locationid) {
@@ -160,6 +163,7 @@ module.exports.locationsUpdateOne = function (req, res) {
 			}
 		);
 };
+
 
 module.exports.locationsDeleteOne = function (req, res) {
 	var locationid = req.params.locationid;

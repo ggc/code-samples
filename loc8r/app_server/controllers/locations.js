@@ -3,6 +3,7 @@ var request = require('request');
 var apiOptions = {
 	server : "http://localhost:3000"
 };
+
 if (process.env.NODE_ENV === 'production') {
 	apiOptions.server = "http://limitless-sands-93200.herokuapp.com";
 }
@@ -69,6 +70,7 @@ var renderHomepage = function(req, res, responseBody) {
 	});
 };
 
+
 /* GET 'Location info' page */
 module.exports.locationInfo = function(req, res){
 	var requestOptions, path;
@@ -82,11 +84,15 @@ module.exports.locationInfo = function(req, res){
 		requestOptions,
 		function(err, response, body) {
 			var data = body;
-			data.coords = {
-				lng : body.coords[0],
-				lat : body.coords[1]
-			};
-			renderDetailPage(res, res, data);
+			if (response.statusCode === 200) {
+				data.coords = {
+					lng : body.coords[0],
+					lat : body.coords[1]
+				};
+				renderDetailPage(res, res, data);
+			} else {
+				_showError(req, res, response.statusCode);
+			}
 		}
 	);
 };
@@ -102,6 +108,24 @@ var renderDetailPage = function (req, res, locDetail) {
 		location: locDetail
 	});
 };
+
+// Shows a generic text-formated error
+_showError = function(req, res, status) {
+	var title, content;
+	if (status === 404) {
+		title = "404, page not found";
+		content = "She's gone. Looks like we can't find this page. Sorry.";
+	} else {
+		title = status + ", something's gone wrong";
+		content = "Something, somewhere, has gone just a little bit wrong.";
+	}
+	res.status(status);
+	res.render('generic-text', {
+		title : title,
+		content : content
+	});
+};
+
 /* GET 'Add review' page */
 module.exports.addReview = function(req, res){
 	res.render('location-review-form', {

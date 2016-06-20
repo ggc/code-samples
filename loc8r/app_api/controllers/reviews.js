@@ -1,11 +1,6 @@
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
 
-var sendJSONResponse = function(res, status, content){
-	res.status(status);
-	res.json(content);
-};
-
 module.exports.reviewsCreate = function (req, res) {
 	var locationid = rea.params.locationid;
 	if (locationid) {
@@ -26,6 +21,11 @@ module.exports.reviewsCreate = function (req, res) {
 			"message" : "Not found, locationid required"
 		});
 	}
+};
+
+var sendJSONResponse = function(res, status, content){
+	res.status(status);
+	res.json(content);
 };
 
 var doAddReview = function (req, res, location) {
@@ -53,6 +53,7 @@ var doAddReview = function (req, res, location) {
 };
 
 //This is asynchronous
+// This commands the change
 var updateAverageRating = function(locationid) {
 	Loc
 		.findById(locationid)
@@ -66,6 +67,7 @@ var updateAverageRating = function(locationid) {
 		);
 };
 
+// TODO Understand this asynchronous call
 var doSetAverageRating = function(location) {
 	var i, reviewCount, ratingAverage, ratingTotal;
 	if (location.reviews && location.reviews.length > 0) {
@@ -87,10 +89,7 @@ var doSetAverageRating = function(location) {
 };
 
 
-// TODO: fix retrieval of reviews
 module.exports.reviewsReadOne = function (req, res) {
-	//review = req.params.reviewid;
-	//sendJSONResponse(res, 200, { review });
 	console.log('Finding location details ', req.params);
 	if (req.params && req.params.locationid && req.params.reviewid){
 		Loc
@@ -138,6 +137,7 @@ module.exports.reviewsReadOne = function (req, res) {
 		});
 	}
 };
+
 
 module.exports.reviewsUpdateOne = function (req, res) {
 	if (!req.params.locationid || !req.params.reviewid) {
@@ -188,6 +188,7 @@ module.exports.reviewsUpdateOne = function (req, res) {
 	      }
 	);
 };
+
 
 module.exports.reviewsDeleteOne = function (req, res) {
 	if (!req.params.locationid || !req.params.reviewid) {
