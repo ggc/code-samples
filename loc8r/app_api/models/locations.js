@@ -42,6 +42,9 @@ var locationSchema = new mongoose.Schema({
     },
     facilities: [String],
     // Always store coordinates longitude, latitude order.
+	// Change 2dsphere index to version 1 or 2.
+	//   dropIndex("coords_2dsphere")
+	//   createIndex({coords:"2dsphere"})
     coords: {
         type: [Number],
         index: '2dsphere',

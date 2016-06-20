@@ -1,1 +1,155 @@
-~/Apps/mongodb-linux-x86_64-ubuntu1404-3.2.6/bin/mongorestore -h ds011664.mlab.com:11664 -d loc8r -u loc8r -p Nononon0 ~/Apps/mongodb-linux-x86_64-ubuntu1404-3.2.6/tmp/mongodump/Loc8r
+mongodump -h localhost:27017 -d Loc8r -o /tmp/mongodump
+
+mongorestore -h ds011664.mlab.com:11664 -d loc8rDB -u loc8rUSER -p loc8rPASS /tmp/mongodump/Loc8r
+
+db.locations.save(
+{
+	"name" : "Starfucks",
+	"address" : "125 Real street",
+	"rating" : 4,
+	"facilities" : [
+		"Hot drinks",
+		"Food",
+		"Premium wifi"
+	],
+	"coords" : [
+		-0.987654,
+		45.454545
+	],
+	"openingTimes" : [
+		{
+			"days" : "Monday - Friday",
+			"opening" : "7:00am",
+			"closing" : "7:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Saturday",
+			"opening" : "8:00am",
+			"closing" : "5:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Sunday",
+			"closed" : true
+		}
+	],
+	"reviews" : [
+		{
+			"author" : "Jacob dogface",
+			"_id" : ObjectId(),
+			"rating" : 1,
+			"timestamp" : new Date ("Jun 18, 2015"),
+			"reviewText" : "It was good. Not enough. But good."
+		},
+		{
+			"author" : "Alan Poe",
+			"_id" : ObjectId(),
+			"rating" : 3,
+			"timestamp" : new Date ("Sep 8, 2013"),
+			"reviewText" : "Nice"
+		}
+	]
+})
+
+
+db.locations.save(
+{
+	"name" : "Dragon Nest",
+	"address" : "23 Real street",
+	"rating" : 2,
+	"facilities" : [
+		"Hot drinks",
+		"Hot Food",
+		"Premium hot wifi"
+	],
+	"coords" : [
+		-1.987654,
+		46.454545
+	],
+	"openingTimes" : [
+		{
+			"days" : "Friday - Sunday",
+			"opening" : "7:00am",
+			"closing" : "7:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Saturday",
+			"opening" : "8:00am",
+			"closing" : "5:00pm",
+			"closed" : false
+		},
+		{
+			"days" : "Monday",
+			"closed" : true
+		}
+	],
+	"reviews" : [
+		{
+			"author" : "Alan Poe",
+			"_id" : ObjectId(),
+			"rating" : 3,
+			"timestamp" : new Date ("Dec 4, 2013"),
+			"reviewText" : "Nice"
+		},
+		{
+			"author" : "Unknown",
+			"_id" : ObjectId(),
+			"rating" : 5,
+			"timestamp" : new Date ("Jan 1, 2014"),
+			"reviewText" : "I liked it."
+		}
+	]
+})
+
+
+{
+	"_id" : ObjectId("57672bfdf4234887924c027a"),
+	      "name" : "Coffee Shop",
+	      	     "address" : "3 Gomez street",
+		     	       "rating" : 4,
+			       		"facilities" : [
+						       "Tea",
+								"Premium wifi"
+									 ],
+										"coords" : [
+											   45.45454544,
+													-0.987654311
+														],
+															"openingTimes" : [
+																       	 {
+																				"days" : "Tuesday - Friday",
+																				       	 	  "opening" : "9:00am",
+																								"closing" : "8:00pm",
+																										"closed" : false
+																											   },
+																													{
+																																"days" : "Saturday",
+																																		"opening" : "8:00am",
+																																				"closing" : "5:00pm",
+																																						"closed" : false
+																																							   },
+																																									{
+																																												"days" : "Monday",
+																																														"closed" : true
+																																															   }
+																																																],
+																																																	"reviews" : [
+																																																		    {
+																																																					"author" : "Oberyn",
+																																																							"_id" : ObjectId("57672bfdf4234887924c0278"),
+																																																									"rating" : 1,
+																																																											"timestamp" : ISODate("1980-03-02T23:00:00Z"),
+																																																													"reviewText" : "It reminds me of my lands"
+																																																														       },
+																																																																{
+																																																																			"author" : "Gabrie Galan",
+																																																																				   	   "_id" : ObjectId("57672bfdf4234887924c0279"),
+																																																																							"rating" : 2,
+																																																																									"timestamp" : ISODate("2013-09-07T22:00:00Z"),
+																																																																											"reviewText" : "It sucks. Its tea sucks. I just like its waitress"
+																																																																												       }
+																																																																													]
+																																																																													}
+																																																																													

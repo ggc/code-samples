@@ -10,11 +10,15 @@ block content
 					small &nbsp;#{pageHeader.strapline}
 	.row
 		.col-xs-12.col-sm-8
+			// NOTE: equals must be sticked to the variable
+			.error= message
 			.row.list-group
 				each location in locations
 					.col-xs-12.list-group-item
 						h4
-							a(href="/location")= location.name
+							// #{location._id} allow to take _id from document
+							//   and append it to the path
+							a(href="/location/#{location._id}")= location.name
 							small &nbsp;
 								+outputRating(location.rating)
 							span.badge.pull-right.badge-default= location.distance

@@ -1,4 +1,4 @@
-cd $HOME/git_repos/codeHere/loc8r/
+scd $HOME/git_repos/codeHere/loc8r/
 (echo $GIO_LAUNCHED_DESKTOP_FILE | grep "guake") >> /dev/null
 if [ $? -eq 0 ];
 #Executed on guake
@@ -10,6 +10,6 @@ then
     #TODO Ask to open nodemon
 #Executed on terminal
 else
-    #TODO 
+    #TODO
     echo "Open Guake\n";
 fi
