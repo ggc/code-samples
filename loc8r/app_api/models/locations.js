@@ -1,14 +1,15 @@
 var mongoose = require('mongoose');
 
 var reviewSchema = new mongoose.Schema({
-    author: String,
+	// Third and last barrir of integrity check
+    author: {type: String, required: true},
     rating: {
         type: Number,
         required: true,
         min: 0,
         max: 5
     },
-    reviewText: String,
+    reviewText: { type: String, required: true},
     createdOn: {
         type: Date,
         "default": Date.now
