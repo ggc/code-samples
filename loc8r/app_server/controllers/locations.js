@@ -9,31 +9,31 @@ if (process.env.NODE_ENV === 'production') {
 }
 /* GET home page */
 module.exports.homelist = function(req, res){
-	var requestOptions, path;
-	path = '/api/locations';
-	requestOptions = {
-		url : apiOptions.server + path,
-		method : "GET",
-		json : {},
-		qs : {
-			lng : 45.454545451,
-			lat : -0.98765432,
-			maxDistance : 25
-		}
-	};
-	request(
-		requestOptions,
-		function(err, response, body) {
-			var i, data;
-			data = body;
-			if (response.statusCode === 200 && data.length) {
-				for (i=0; i<data.length; i++) {
-					data[i].distance = _formatDistance(data[i].distance);
-				}
-			}
-			renderHomepage(req, res, data);
-		}
-	);
+	// var requestOptions, path;
+	// path = '/api/locations';
+	// requestOptions = {
+	// 	url : apiOptions.server + path,
+	// 	method : "GET",
+	// 	json : {},
+	// 	qs : {
+	// 		lng : 45.454545451,
+	// 		lat : -0.98765432,
+	// 		maxDistance : 25
+	// 	}
+	// };
+	// request(
+	// 	requestOptions,
+	// 	function(err, response, body) {
+	// 		var i, data;
+	// 		data = body;
+	// 		if (response.statusCode === 200 && data.length) {
+	// 			for (i=0; i<data.length; i++) {
+	// 				data[i].distance = _formatDistance(data[i].distance);
+	// 			}
+	// 		}
+			renderHomepage(req, res); //renderHomepage(req, res, data); // To use Angular
+	// 	}
+	// );
 };
 
 var _formatDistance = function (distance) {
@@ -48,25 +48,26 @@ var _formatDistance = function (distance) {
 	return numDistance + unit;
 };
 
-var renderHomepage = function(req, res, responseBody) {
-	var message;
-	if(!(responseBody instanceof Array)) {
-		message = "API lookup error";
-		responseBody = [];
-	} else {
-		if(!responseBody.length) {
-			message = "No places found nearby";
-		}
-	}
+//var renderHomepage = function(req, res, responseBody) { //To use Angular
+var renderHomepage = function(req, res) {
+	// var message;
+	// if(!(responseBody instanceof Array)) {
+	// 	message = "API lookup error";
+	// 	responseBody = [];
+	// } else {
+	// 	if(!responseBody.length) {
+	// 		message = "No places found nearby";
+	// 	}
+	// }
 	res.render('location-list', {
 		title: 'Loc8r - find a place to work with wifi',
 		pageHeader: {
 			title: 'Loc8r',
 			strapline: 'Find places to work with wifi near you!'
 		},
-		sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for.",
-		locations: responseBody,
-		message: message
+		sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for."
+		//locations: responseBody,
+		//message: message
 	});
 };
 
@@ -104,7 +105,7 @@ var getLocationInfo = function (req, res, callback) {
 				};
 				callback(req, res, data);
 			} else {
-				_showError(req, tes, response.statusCode);
+				_showError(req, res, response.statusCode);
 			}
 		}
 	);
@@ -156,15 +157,15 @@ module.exports.doAddReview = function(req, res) {
 		rating: parseInt(req.body.rating, 10),
 		reviewText: req.body.review
 	};
-	console.log('\tpostdata: '+ postdata);
-	postdata = JSON.stringify(postdata);
-	console.log('\tpostdata string: '+ JSON.stringify(postdata));
-	console.log('\tpath: ' + path);
+	//console.log('\tpostdata: '+ postdata);
+	//postdata = JSON.stringify(postdata);
+	//console.log('\tpostdata string: '+ postdata);
+	//console.log('\tpath: ' + path);
 	// TODO fix this shit. Passing wrong formatted body to http request
 	requestOptions = {
 		url: apiOptions.server + path,
 		method: "POST",
-		json: postdata
+		json: postdata //Send object as JSON
 	};
 	// Second barrier for integrity check (schema, )
 	if( !postdata.author || !postdata.rating || !postdata.reviewText) {

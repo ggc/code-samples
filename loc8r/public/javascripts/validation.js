@@ -1,3 +1,4 @@
+// TODO test use
 $('#addReview').submit(function (e) {
 	$('.alert.alert-danger').hide();
 	if (!$('input#name').val() || !$('select#rating').val() || !$('textarea#review').val()) {
