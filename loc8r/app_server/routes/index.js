@@ -4,7 +4,9 @@ var ctrlLocations = require('../controllers/locations');
 var ctrlOthers = require('../controllers/others');
 
 /* Location-like pages*/
-router.get('/', ctrlLocations.homelist);
+//Swap '//#' between get / to SPA or no-SPA
+//router.get('/', ctrlLocations.homelist); //#
+router.get('/', ctrlOthers.angularApp); //#
 router.get('/location', ctrlLocations.locationInfo);
 router.get('/location/:locationid', ctrlLocations.locationInfo);
 router.get('/location/:locationid/reviews/new', ctrlLocations.addReview);

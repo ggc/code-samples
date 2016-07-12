@@ -4,14 +4,14 @@ var Loc = mongoose.model('Location');
 module.exports.locationsListByDistance = function (req, res) {
 	var lng = parseFloat(req.query.lng);
 	var lat = parseFloat(req.query.lat);
-	var maxDistance = parseFloat(req.query.maxDistance);
+	var maxDistance = parseFloat(req.query.maxDistance); // meters
 	var point = {
 		type: "Point",
 		coordinates: [lng, lat]
 	};
 	var geoOptions = {
 		spherical: true,
-		maxDistance: theEarth.getRadsFromDistance(maxDistance),
+		maxDistance: maxDistance,
 		num: 10
 	};
 	//if (!lng || !lat) { // Because [0,0] is still a place to live.
@@ -27,9 +27,11 @@ module.exports.locationsListByDistance = function (req, res) {
 		if (err) {
 			sendJSONResponse(res, 404, err);
 		} else {
+			console.log("maxDistance=" + maxDistance);
 			results.forEach(function(doc) {
+				console.log(doc.obj.name + " distance to point: " + doc.dis);
 				locations.push({
-					distance: theEarth.getDistanceFromRads(doc.dis),
+					distance: doc.dis/1000, //TODO
 					name: doc.obj.name,
 					address: doc.obj.address,
 					rating: doc.obj.rating,
@@ -45,6 +47,9 @@ module.exports.locationsListByDistance = function (req, res) {
 var theEarth = (function() {
 	var earthRadius = 6371; //km
 
+	// Specify the distance in meters for GeoJSON (this case) data 
+	// and in radians for legacy coordinate pairs.
+	// To use legacy pairs.
 	var getDistanceFromRads = function(rads) {
 		return parseFloat(rads * earthRadius);
 	};
@@ -66,6 +71,7 @@ var sendJSONResponse = function(res, status, content){
 
 
 module.exports.locationsCreate = function (req, res) {
+	// console.log(req.body.days1);
 	Loc.create({
 		name: req.body.name,
 		address: req.body.address,

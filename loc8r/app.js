@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 require('./app_api/models/db');
 
+// Here you can search for routes.
 var routes = require('./app_server/routes/index');
 var routesAPI = require('./app_api/routes/index');
 var users = require('./app_server/routes/users');
@@ -23,7 +24,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'app_client'))); // This allows to search inside angularVersion
 
+// Use Express with this routes
 app.use('/', routes);
 app.use('/api', routesAPI);
 app.use('/users', users);

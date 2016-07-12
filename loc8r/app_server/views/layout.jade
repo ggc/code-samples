@@ -1,11 +1,11 @@
 doctype html
-html
+html(ng-app='loc8rApp')
 	head
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		title= title
 		link(rel='stylesheet', href='/bootstrap/css/amelia.bootstrap.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
-body(ng-app='loc8rApp')
+body
 	.navbar.navbar-default.navbar-fixed-top
 		.container
 			.navbar-header
@@ -19,17 +19,22 @@ body(ng-app='loc8rApp')
 					li
 						a(href='/about/') About
 	.container
-		// Choose the layout in .render function: "res.render('location-list', f);"
-		block content
+		div(ng-view)
+			// Choose the layout in .render function: "res.render('location-list', f);"
+			block content
 
-		footer
-			.row
-				.col-xs-12
-					small &copy; Gabriel Galan 2016
+			footer
+				.row
+					.col-xs-12
+						small &copy; Gabriel Galán 2016
 
 	//script(src='/angular/angular.min.js')
 	script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js")
-	script(src='/angular/loc8rApp.js')
+	script(src='/lib/angular-route.min.js')
 	script(src='/javascripts/jquery-1.12.4.min.js')
-	script(src='/bootstrap/js/bootstrap.min.js')
 	script(src='/javascripts/validation.js')
+	script(src='/bootstrap/js/bootstrap.min.js')
+		// Using static path, take app.js from app_client
+	script(src='/app.js')
+		// Removed /home/
+	script(src='/home.controller.js')

@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 /* GET home page */
 module.exports.homelist = function(req, res){
+	// Hard-coded data
 	// var requestOptions, path;
 	// path = '/api/locations';
 	// requestOptions = {
@@ -36,16 +37,23 @@ module.exports.homelist = function(req, res){
 	// );
 };
 
+var _isNumeric = function (n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 var _formatDistance = function (distance) {
 	var numDistance, unit;
-	if (distance > 1) {
-		numDistance = parseFloat(distance).toFixed(1);
-		unit = 'km';
+	if (distance && _isNumeric(distance)) {
+		if (distance > 1) {
+			numDistance = parseFloat(distance).toFixed(1);
+			unit = 'km';
+		} else {
+			numDistance = parseInt(distance * 1000,10);
+			unit = 'm';
+		} return numDistance + unit;
 	} else {
-		numDistance = parseInt(distance * 1000,10);
-		unit = 'm';
+		return "?";
 	}
-	return numDistance + unit;
 };
 
 //var renderHomepage = function(req, res, responseBody) { //To use Angular
@@ -144,9 +152,10 @@ var renderReviewForm = function(req, res, locDetail) {
 	res.render('location-review-form', {
 		title: 'Review ' + locDetail.name + ' on Loc8r',
 		pageHeader: { title: 'Review ' + locDetail.name},
-		error: req.query.err
+		error: req.query.err,
+		url: req.originalUrl
 	});
-}
+};
 
 module.exports.doAddReview = function(req, res) {
 	var requestOptions, path, locationid, postdata;
