@@ -5,6 +5,10 @@
 
 	homeCtrl.$inject = ['$scope', 'loc8rData', 'geolocation']; // Necessary for minifying js files
 	function homeCtrl ($scope, loc8rData, geolocation) {
+		// Nasty little fix for IE9
+		if (window.location.pathname !== '/') {
+			window.location.href = '/#' + window.location.pathname;
+		}
 		var vm = this; // "vm" out there
 		// Simple bindings
 		vm.pageHeader = {

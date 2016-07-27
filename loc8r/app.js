@@ -9,9 +9,9 @@ var uglifyJs = require("uglify-js");
 var fs = require('fs');
 
 // Here you can search for routes.
-// var routes = require('./app_server/routes/index');
+var routes = require('./app_server/routes/index');
 var routesAPI = require('./app_api/routes/index');
-var users = require('./app_server/routes/users');
+//var users = require('./app_server/routes/users');
 
 var app = express();
 
@@ -22,9 +22,11 @@ app.set('view engine', 'jade');
 /*var appClientFiles = [
   'app_client/app.js',
   'app_client/home/home.controller.js',
+  'app_client/about/about.controller.js',
   'app_client/common/services/geolocation.service.js',
   'app_client/common/services/loc8rData.service.js',
   'app_client/common/filters/formatDistance.filter.js',
+  'app_client/common/filters/addHtmlLineBreaks.filter.js',
   'app_client/common/directives/ratingStars/ratingStars.directive.js',
   'app_client/common/directives/footerGeneric/footerGeneric.directive.js',
   'app_client/common/directives/navigation/navigation.directive.js',
@@ -52,11 +54,11 @@ app.use(express.static(path.join(__dirname, 'app_client'))); // This allows to s
 // Use Express with this routes
 //app.use('/', routes);
 app.use('/api', routesAPI);
-app.use('/users', users);
+//app.use('/users', users);
 
 // Use this as default page
 app.use(function(req, res) {
-  res.sendfile(path.join(__dirname, 'app_client', 'index.html'));
+  res.sendFile(path.join(__dirname, 'app_client', 'index.html'));
 });
 
 // catch 404 and forward to error handler
