@@ -7,7 +7,7 @@
 		$routeProvider
 		// config route definitions
 		.when('/', {
-			templateUrl: 'home/home.view.html', // Paste this 'url-to-template' on 'content'
+			templateUrl: '/home/home.view.html', // Paste this 'url-to-template' on 'content'
 			controller: 'homeCtrl', // "Use this controller"
 			controllerAs: 'vm' // (ViewModel) Use controllerAs to not keep $SCOPE overload
 		})

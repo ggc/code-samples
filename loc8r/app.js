@@ -19,7 +19,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'jade');
 
-/*var appClientFiles = [
+var appClientFiles = [
   'app_client/app.js',
   'app_client/home/home.controller.js',
   'app_client/common/services/geolocation.service.js',
@@ -27,15 +27,15 @@ app.set('view engine', 'jade');
   'app_client/common/filters/formatDistance.filter.js',
   'app_client/common/directives/ratingStars/ratingStars.directive.js'
 ];
-var uglified = uglifyJs.minify(appClientFiles, { compress: false });
+var uglified = uglifyJs.minify(appClientFiles, { compress : false });
 
 fs.writeFile('public/angular/loc8r.min.js', uglified.code, function (err){
   if(err) {
     console.log(err);
   } else {
-    console.log('Script generated and saved: loc8r.min.js');
+    console.log("Script generated and saved:", 'loc8r.min.js');
   }
-});*/
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
