@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+// var fs = require('fs');
 var mongo = require('mongodb').MongoClient;
 
 var routes = require('./routes/index');
@@ -35,29 +36,32 @@ app.use('/users', users);
 // })
 var readyToParse;
 // Matlab json parsing from file
-var solarValues = [];
+var tempMatrix = [];
+var irradiationMatrix = [];
+var tempPredMatrix = [];
+var irradiationPredMatrix = [];
 
 var url = 'mongodb://localhost/weather';
 
-var cursorIterator = function(cursor, callback) {
-    cursor.hasNext((err, result) => {
-        if(err) {
-            callback(err);
-        }
-        cursor.skip(1).limit(24)
-        .toArray((err, docs) => {
-            if(err) throw err;
-            console.log('I found '+docs.length()+' items: ', docs)
+// var cursorIterator = function(cursor, callback) {
+//     cursor.hasNext((err, result) => {
+//         if(err) {
+//             callback(err);
+//         }
+//         cursor.skip(1).limit(24)
+//         .toArray((err, docs) => {
+//             if(err) throw err;
+//             console.log('I found '+docs.length()+' items: ', docs)
 
-            solarValues.push({
-              'temperature': docs[0].response.currently.temperature,
-              'cloudCover': docs[0].response.currently.cloudCover
-            })
-            callback(docs);
-        });
-        cursorIterator(cursor, callback);
-    })
-};
+//             irradiationMatrix.push({
+//               'temperature': docs[0].response.currently.temperature,
+//               'cloudCover': docs[0].response.currently.cloudCover
+//             })
+//             callback(docs);
+//         });
+//         cursorIterator(cursor, callback);
+//     })
+// };
 
 
 var findPreds = function(db, callback) {
@@ -65,21 +69,35 @@ var findPreds = function(db, callback) {
 
     var cursor = collection.find({});
     t = 0;
-    day = [];
+    dayIrradiation = [];
+    dayTemperature = [];
+    dayIrradiationPred = [];
+    dayTemperaturePred = [];
+
     cursor.each((err, doc) => {
-        // console.log('doc: ', doc)
         if(doc){
-            day.push(doc.response.currently.temperature);
+            dayIrradiation.push(doc.response.currently.cloudCover);
+            dayTemperature.push(doc.response.currently.temperature);
             if(doc.prediction_made.getHours() == 0){
-              solarValues.push(day);
-              day = [];
-              t++;
+                irradiationMatrix.push(dayIrradiation);
+                tempMatrix.push(dayTemperature);
+                dayIrradiation = [], dayTemperature = [];
+                t++;
             }
-            // solarValues
-            // .push({
-            //     'temperature': doc.response.currently.temperature,
-            //     'cloudCover': doc.response.currently.cloudCover
-            // })
+
+            // Sacar a otra consulta que salte predicciones entre 1 y 23
+            if(doc.prediction_made.getHours() == 0){
+                for (let d in doc.response.hourly.data) {
+                    dayIrradiationPred.push(doc.response.hourly.data[d].cloudCover);
+                    dayTemperaturePred.push(doc.response.hourly.data[d].temperature);
+                }
+                irradiationPredMatrix.push(dayIrradiationPred);
+                tempPredMatrix.push(dayTemperaturePred);
+                // console.log('pred at '+doc.prediction_made+': ',dayIrradiationPred);
+                // console.log('Ir pred length', irradiationPredMatrix.length);
+                dayIrradiationPred = [];
+                dayTemperaturePred = [];
+            }
         }
         else{
           cursor.close();
@@ -92,11 +110,12 @@ mongo.connect(url, (err, db) => {
     if(err) throw err;
     console.log('Connected to db weather');
 
-    // Remember to use db.close();
     findPreds(db, () => {
-
-
-      console.log('Solar values......', solarValues);
+      console.log('Temperatures', tempMatrix);
+      console.log('Irradiations', irradiationMatrix);
+      console.log('Irradiations pred', irradiationPredMatrix);
+      console.log('Temperatures pred', tempPredMatrix);
+      console.log('Retrieved '+t+' days');
       db.close();
     })
 })
