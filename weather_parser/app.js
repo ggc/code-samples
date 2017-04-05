@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-// var fs = require('fs');
+var fs = require('fs');
 var mongo = require('mongodb').MongoClient;
 
 var routes = require('./routes/index');
@@ -67,40 +67,49 @@ var url = 'mongodb://localhost/weather';
 var findPreds = function(db, callback) {
     var collection = db.collection('preds');
 
-    var cursor = collection.find({});
+    var cursor = collection.find({"prediction_made": {$gte: new Date("2017-03-00")}}); // {"prediction_made": {$gt: new ISODate("2017-03-21")}}
     t = 0;
+    elementsAdded = 0;
     dayIrradiation = [];
     dayTemperature = [];
     dayIrradiationPred = [];
     dayTemperaturePred = [];
 
+    // For every document retrieved
     cursor.each((err, doc) => {
         if(doc){
+            // Add current values to 'day' vector
             dayIrradiation.push(doc.response.currently.cloudCover);
             dayTemperature.push(doc.response.currently.temperature);
-            if(doc.prediction_made.getHours() == 0){
-                irradiationMatrix.push(dayIrradiation);
-                tempMatrix.push(dayTemperature);
-                dayIrradiation = [], dayTemperature = [];
-                t++;
-            }
+            elementsAdded++;
 
-            // Sacar a otra consulta que salte predicciones entre 1 y 23
-            if(doc.prediction_made.getHours() == 0){
+            // At start of every day...
+            if(doc.prediction_made.getHours() == 23){
+                // Create pred day
                 for (let d in doc.response.hourly.data) {
                     dayIrradiationPred.push(doc.response.hourly.data[d].cloudCover);
                     dayTemperaturePred.push(doc.response.hourly.data[d].temperature);
                 }
+                
                 irradiationPredMatrix.push(dayIrradiationPred);
                 tempPredMatrix.push(dayTemperaturePred);
-                // console.log('pred at '+doc.prediction_made+': ',dayIrradiationPred);
-                // console.log('Ir pred length', irradiationPredMatrix.length);
-                dayIrradiationPred = [];
-                dayTemperaturePred = [];
+
+                // Add completed last day to matrix
+                irradiationMatrix.push(dayIrradiation);
+                tempMatrix.push(dayTemperature);
+
+                console.log('added '+dayIrradiation.length+' '+elementsAdded+' elements at day '+t);
+                console.log('Date: ', doc.prediction_made.toString());
+                dayIrradiationPred = [], 
+                dayTemperaturePred = [], 
+                dayIrradiation = [], 
+                dayTemperature = [];
+                t++;
             }
         }
         else{
           cursor.close();
+          console.log('calling callback');
           callback();
         }
     })    
@@ -111,11 +120,32 @@ mongo.connect(url, (err, db) => {
     console.log('Connected to db weather');
 
     findPreds(db, () => {
-      console.log('Temperatures', tempMatrix);
-      console.log('Irradiations', irradiationMatrix);
-      console.log('Irradiations pred', irradiationPredMatrix);
-      console.log('Temperatures pred', tempPredMatrix);
-      console.log('Retrieved '+t+' days');
+      // console.log('Temperatures', tempMatrix);
+      let fd_ir = fs.openSync('ir.txt','w');
+      let fd_irpred = fs.openSync('ir_pred.txt','w');
+      let fd_temp = fs.openSync('temp.txt','w');
+      let fd_temppred = fs.openSync('temp_pred.txt','w');
+
+      fs.write(fd_ir, irradiationMatrix.toString(), (err, written, string) => {
+        console.log('Irradiation written');
+      })
+      fs.write(fd_irpred, irradiationPredMatrix, (err, written, string) => {
+        console.log('Irradiation pred written');
+      })
+      fs.write(fd_temp, tempMatrix, (err, written, string) => {
+        console.log('Temperature written');
+      })
+      fs.write(fd_temppred, tempPredMatrix, (err, written, string) => {
+        console.log('Temperature pred written');
+      })
+      // console.log('Irradiations', irradiationMatrix);
+      // console.log('Irradiations pred', irradiationPredMatrix);
+      // console.log('Temperatures pred', tempPredMatrix);
+      // console.log('Retrieved '+t+' days');
+      fs.closeSync(fd_ir);
+      fs.closeSync(fd_irpred);
+      fs.closeSync(fd_temp);
+      fs.closeSync(fd_temppred);
       db.close();
     })
 })
