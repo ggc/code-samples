@@ -70,7 +70,7 @@ var findPreds = function(db, callback) {
     var cursor = collection.find({"prediction_made": {$gte: new Date("2017-03-00")}}); // {"prediction_made": {$gt: new ISODate("2017-03-21")}}
     t = 0;
     elementsAdded = 0;
-    dayIrradiation = [];
+    dayIrradiation = {};
     dayTemperature = [];
     dayIrradiationPred = [];
     dayTemperaturePred = [];
@@ -78,8 +78,16 @@ var findPreds = function(db, callback) {
     // For every document retrieved
     cursor.each((err, doc) => {
         if(doc){
+            // Init row with attr named with date
+            let date = ''+doc.prediction_made.getUTCFullYear()+'-'+(doc.prediction_made.getMonth()+1)+'-'+(doc.prediction_made.getDate()+1);
+            if( !dayIrradiation[date] ){
+                dayIrradiation[date] = [];
+                console.log('lest get empty at ',date)
+            }
+
             // Add current values to 'day' vector
-            dayIrradiation.push(doc.response.currently.cloudCover);
+            // dayIrradiation[date].push(doc.response.currently.cloudCover);
+            dayIrradiation[date][doc.prediction_made.getHours()+1] = doc.response.currently.cloudCover;
             dayTemperature.push(doc.response.currently.temperature);
             elementsAdded++;
 
@@ -98,11 +106,11 @@ var findPreds = function(db, callback) {
                 irradiationMatrix.push(dayIrradiation);
                 tempMatrix.push(dayTemperature);
 
-                console.log('added '+dayIrradiation.length+' '+elementsAdded+' elements at day '+t);
+                console.log('added '+dayIrradiation[date].length+' '+elementsAdded+' elements at day '+t);
                 console.log('Date: ', doc.prediction_made.toString());
                 dayIrradiationPred = [], 
                 dayTemperaturePred = [], 
-                dayIrradiation = [], 
+                // dayIrradiation = {}, 
                 dayTemperature = [];
                 t++;
             }
@@ -126,7 +134,7 @@ mongo.connect(url, (err, db) => {
       let fd_temp = fs.openSync('temp.txt','w');
       let fd_temppred = fs.openSync('temp_pred.txt','w');
 
-      fs.write(fd_ir, irradiationMatrix.toString(), (err, written, string) => {
+      fs.write(fd_ir, JSON.stringify(dayIrradiation), (err, written, string) => {
         console.log('Irradiation written');
       })
       fs.write(fd_irpred, irradiationPredMatrix, (err, written, string) => {
