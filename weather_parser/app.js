@@ -28,99 +28,87 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-// DB handler
-// mongoose.connect('mongodb://localhost/weather');
-// var db = mongoose.connection;
-// db.once('open', () => {
-//   console.log('Connected to db');
-// })
-var readyToParse;
+
+var t = 0;
 // Matlab json parsing from file
-var tempMatrix = [];
-var irradiationMatrix = [];
-var tempPredMatrix = [];
-var irradiationPredMatrix = [];
+var tempMatrix = {};
+var irradiationMatrix = {};
+var tempPredMatrix = {};
+var irradiationPredMatrix = {};
+
+var dayIrradiation = {};
+var dayTemperature = {};
+var dayIrradiationPred = {};
+var dayTemperaturePred = {};
 
 var url = 'mongodb://localhost/weather';
 
-// var cursorIterator = function(cursor, callback) {
-//     cursor.hasNext((err, result) => {
-//         if(err) {
-//             callback(err);
-//         }
-//         cursor.skip(1).limit(24)
-//         .toArray((err, docs) => {
-//             if(err) throw err;
-//             console.log('I found '+docs.length()+' items: ', docs)
-
-//             irradiationMatrix.push({
-//               'temperature': docs[0].response.currently.temperature,
-//               'cloudCover': docs[0].response.currently.cloudCover
-//             })
-//             callback(docs);
-//         });
-//         cursorIterator(cursor, callback);
-//     })
-// };
-
+var fillValues = function(){
+    for (let d in irradiationMatrix){
+        for (let t = 0; t<24; t++){
+            if( irradiationMatrix[''+d][''+t] === undefined){
+                console.log('day '+d+' hour '+t+' its empty');
+                t === 0 ? irradiationMatrix[''+d][''+t] = 0 : irradiationMatrix[''+d][''+t] = irradiationMatrix[''+d][''+(t-1)];
+            }
+            if( irradiationPredMatrix[''+d][''+t] === undefined){
+                console.log('day '+d+' hour '+t+' its empty');
+                t === 0 ? irradiationPredMatrix[''+d][''+t] = 0 : irradiationPredMatrix[''+d][''+t] = irradiationPredMatrix[''+d][''+(t-1)];
+            }
+            if( tempMatrix[''+d][''+t] === undefined){
+                console.log('day '+d+' hour '+t+' its empty');
+                t === 0 ? tempMatrix[''+d][''+t] = 0 : tempMatrix[''+d][''+t] = tempMatrix[''+d][''+(t-1)];
+            }
+            if( tempPredMatrix[''+d][''+t] === undefined){
+                console.log('day '+d+' hour '+t+' its empty');
+                t === 0 ? tempPredMatrix[''+d][''+t] = 0 : tempPredMatrix[''+d][''+t] = tempPredMatrix[''+d][''+(t-1)];
+            }
+        }
+    }
+}
 
 var findPreds = function(db, callback) {
     var collection = db.collection('preds');
 
-    var cursor = collection.find({"prediction_made": {$gte: new Date("2017-03-00")}}); // {"prediction_made": {$gt: new ISODate("2017-03-21")}}
-    t = 0;
-    elementsAdded = 0;
-    dayIrradiation = {};
-    dayTemperature = [];
-    dayIrradiationPred = [];
-    dayTemperaturePred = [];
+    var cursor = collection.find({$and: [
+            {"prediction_made": 
+                {$gte: new Date("2017-03-02")}
+            },
+            {"prediction_made": 
+                {$lt: new Date("2017-04-03")}
+            }
+        ]      
+    });
 
-    // For every document retrieved
+    // Every doc has Current hour info and Next 24 hours info
     cursor.each((err, doc) => {
+        if (err) throw err;
         if(doc){
-            // Init row with attr named with date
-            let date = ''+doc.prediction_made.getUTCFullYear()+'-'+(doc.prediction_made.getMonth()+1)+'-'+(doc.prediction_made.getDate()+1);
-            if( !dayIrradiation[date] ){
-                dayIrradiation[date] = [];
-                console.log('lest get empty at ',date)
-            }
+            let date = ''+doc.prediction_made.getUTCFullYear()+'-'+(doc.prediction_made.getUTCMonth())+'-'+doc.prediction_made.getUTCDate();
+            let time = doc.prediction_made.getUTCHours();
 
-            // Add current values to 'day' vector
-            // dayIrradiation[date].push(doc.response.currently.cloudCover);
-            dayIrradiation[date][doc.prediction_made.getHours()+1] = doc.response.currently.cloudCover;
-            dayTemperature.push(doc.response.currently.temperature);
-            elementsAdded++;
+            if( !irradiationMatrix[date] ) irradiationMatrix[date] = {}
+            if( !tempMatrix[date] ) tempMatrix[date] = {};
 
-            // At start of every day...
-            if(doc.prediction_made.getHours() == 23){
-                // Create pred day
+            // Take prediction [00-23] at start of the day
+            if(time  == 0){
+                if( !irradiationPredMatrix[date] ) irradiationPredMatrix[date] = {}
+                if( !tempPredMatrix[date] ) tempPredMatrix[date] = {};
                 for (let d in doc.response.hourly.data) {
-                    dayIrradiationPred.push(doc.response.hourly.data[d].cloudCover);
-                    dayTemperaturePred.push(doc.response.hourly.data[d].temperature);
+                    irradiationPredMatrix[date][d] = doc.response.hourly.data[d].cloudCover;
+                    tempPredMatrix[date][d] = doc.response.hourly.data[d].temperature;
                 }
-                
-                irradiationPredMatrix.push(dayIrradiationPred);
-                tempPredMatrix.push(dayTemperaturePred);
-
-                // Add completed last day to matrix
-                irradiationMatrix.push(dayIrradiation);
-                tempMatrix.push(dayTemperature);
-
-                console.log('added '+dayIrradiation[date].length+' '+elementsAdded+' elements at day '+t);
-                console.log('Date: ', doc.prediction_made.toString());
-                dayIrradiationPred = [], 
-                dayTemperaturePred = [], 
-                // dayIrradiation = {}, 
-                dayTemperature = [];
-                t++;
             }
+
+            irradiationMatrix[date][time] = doc.response.currently.cloudCover;
+            tempMatrix[date][time] = doc.response.currently.temperature;
+            t++;
         }
         else{
-          cursor.close();
-          console.log('calling callback');
-          callback();
+            fillValues();
+            // console.log(irradiationMatrix);
+            callback();
         }
-    })    
+    });
 };
 
 mongo.connect(url, (err, db) => {
@@ -128,33 +116,32 @@ mongo.connect(url, (err, db) => {
     console.log('Connected to db weather');
 
     findPreds(db, () => {
-      // console.log('Temperatures', tempMatrix);
-      let fd_ir = fs.openSync('ir.txt','w');
-      let fd_irpred = fs.openSync('ir_pred.txt','w');
-      let fd_temp = fs.openSync('temp.txt','w');
-      let fd_temppred = fs.openSync('temp_pred.txt','w');
+        console.log(t+' docs retrieved')
+        // console.log('Temperatures', tempMatrix);
+        let fd_ir = fs.openSync('assets/ir.txt','w');
+        let fd_irpred = fs.openSync('assets/ir_pred.txt','w');
+        let fd_temp = fs.openSync('assets/temp.txt','w');
+        let fd_temppred = fs.openSync('assets/temp_pred.txt','w');
 
-      fs.write(fd_ir, JSON.stringify(dayIrradiation), (err, written, string) => {
-        console.log('Irradiation written');
-      })
-      fs.write(fd_irpred, irradiationPredMatrix, (err, written, string) => {
-        console.log('Irradiation pred written');
-      })
-      fs.write(fd_temp, tempMatrix, (err, written, string) => {
-        console.log('Temperature written');
-      })
-      fs.write(fd_temppred, tempPredMatrix, (err, written, string) => {
-        console.log('Temperature pred written');
-      })
-      // console.log('Irradiations', irradiationMatrix);
-      // console.log('Irradiations pred', irradiationPredMatrix);
-      // console.log('Temperatures pred', tempPredMatrix);
-      // console.log('Retrieved '+t+' days');
-      fs.closeSync(fd_ir);
-      fs.closeSync(fd_irpred);
-      fs.closeSync(fd_temp);
-      fs.closeSync(fd_temppred);
-      db.close();
+        fillValues();
+
+        fs.write(fd_ir, JSON.stringify(irradiationMatrix), (err, written, string) => {
+          // console.log('Irradiation written');
+        })
+        fs.write(fd_irpred, JSON.stringify(irradiationPredMatrix), (err, written, string) => {
+          // console.log('Irradiation pred written');
+        })
+        fs.write(fd_temp, JSON.stringify(tempMatrix), (err, written, string) => {
+          // console.log('Temperature written');
+        })
+        fs.write(fd_temppred, JSON.stringify(tempPredMatrix), (err, written, string) => {
+          // console.log('Temperature pred written');
+        })
+        fs.closeSync(fd_ir);
+        fs.closeSync(fd_irpred);
+        fs.closeSync(fd_temp);
+        fs.closeSync(fd_temppred);
+        db.close();
     })
 })
 
@@ -178,9 +165,9 @@ mongo.connect(url, (err, db) => {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -191,8 +178,8 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
-      message: err.message,
-      error: err
+        message: err.message,
+        error: err
     });
   });
 }
