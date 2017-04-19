@@ -1,0 +1,7 @@
+keyrock:
+    image: fiware/idm
+    container_name: idm
+    ports:
+        - "8000:8000"
+        - "5000:5000"
+
