@@ -20,15 +20,7 @@ FROM centos:6
 
 MAINTAINER Francisco Romero Bueno <francisco.romerobueno@telefonica.com>
 
-
 # Environment variables
-ENV MVN_VER "3.3.9"
-ENV MVN_HOME "/opt/apache-maven"
-
-ENV FLUME_VER "1.4.0"
-ENV FLUME_HOME "/opt/apache-flume"
-
-ENV JAVA_VERSION "1.7.0"
 ENV CYGNUS_USER "cygnus"
 ENV CYGNUS_HOME "/opt/fiware-cygnus"
 ENV CYGNUS_VERSION "1.7.0_SNAPSHOT"
@@ -39,13 +31,14 @@ ENV CYGNUS_LOG_LEVEL "INFO"
 ENV CYGNUS_LOG_APPENDER "console"
 ENV CYGNUS_SERVICE_PORT "5050"
 ENV CYGNUS_API_PORT "8081"
-ENV CYGNUS_MYSQL_HOST "172.18.0.2"
+ENV CYGNUS_MYSQL_HOST "172.17.0.4"
 ENV CYGNUS_MYSQL_PORT "3306"
 ENV CYGNUS_MYSQL_USER "root"
 ENV CYGNUS_MYSQL_PASS "r00t"
-ENV CYGNUS_MONGO_HOSTS "172.18.0.3:27017"
+ENV CYGNUS_MONGO_HOSTS "172.17.0.2:27017"
 ENV CYGNUS_MONGO_USER ""
 ENV CYGNUS_MONGO_PASS ""
+
 # NOTE: Configure correctly GIT_URL_CYGNUS and GIT_REV_CYGNUS for each git branch/fork used
 ENV GIT_URL_CYGNUS "https://github.com/telefonicaid/fiware-cygnus.git"
 # ENV GIT_URL_CYGNUS "https://github.com/myuser/fiware-cygnus.git"
@@ -59,7 +52,10 @@ ENV FLUME_VER "1.4.0"
 ENV FLUME_HOME "/opt/apache-flume"
 
 ENV JAVA_VERSION "1.7.0"
+
 COPY ./ ${CYGNUS_HOME}
+
+# Install
 RUN \
     # Add Cygnus user
     adduser ${CYGNUS_USER} && \
@@ -88,7 +84,8 @@ RUN \
     mkdir -p ${FLUME_HOME}/plugins.d/cygnus && \
     mkdir -p ${FLUME_HOME}/plugins.d/cygnus/lib && \
     mkdir -p ${FLUME_HOME}/plugins.d/cygnus/libext && \
-    chown -R cygnus:cygnus ${FLUME_HOME} && \
+    chown -R cygnus:cygnus ${FLUME_HOME}
+RUN \
     # Make a shallow clone to help reduce final image size
     #echo "INFO: Cloning Cygnus using <${GIT_URL_CYGNUS}> and <${GIT_REV_CYGNUS}>" && \
     #git clone --depth 1 ${GIT_URL_CYGNUS} ${CYGNUS_HOME} && \
@@ -99,25 +96,20 @@ RUN \
     ${MVN_HOME}/bin/mvn ${MAVEN_ARGS} clean compile exec:exec assembly:single && \
     cp target/cygnus-common-${CYGNUS_VERSION}-jar-with-dependencies.jar ${FLUME_HOME}/plugins.d/cygnus/libext/ && \
     ${MVN_HOME}/bin/mvn install:install-file -Dfile=${FLUME_HOME}/plugins.d/cygnus/libext/cygnus-common-${CYGNUS_VERSION}-jar-with-dependencies.jar -DgroupId=com.telefonica.iot -DartifactId=cygnus-common -Dversion=${CYGNUS_VERSION} -Dpackaging=jar -DgeneratePom=false && \
-\
     echo "INFO: Build and install cygnus-ngsi" && \
     cd ${CYGNUS_HOME}/cygnus-ngsi && \
     ${MVN_HOME}/bin/mvn ${MAVEN_ARGS} clean compile exec:exec assembly:single && \
     cp target/cygnus-ngsi-${CYGNUS_VERSION}-jar-with-dependencies.jar ${FLUME_HOME}/plugins.d/cygnus/lib/ && \
-\
     echo "INFO: Install Cygnus Application script" && \
     cp ${CYGNUS_HOME}/cygnus-common/target/classes/cygnus-flume-ng ${FLUME_HOME}/bin/ && \
     chmod +x ${FLUME_HOME}/bin/cygnus-flume-ng && \
     echo "INFO: Instantiate some configuration files" && \
     cp ${CYGNUS_HOME}/cygnus-common/conf/log4j.properties.template ${FLUME_HOME}/conf/log4j.properties && \
-    #cp ${CYGNUS_HOME}/cygnus-ngsi/conf/grouping_rules.conf.template ${FLUME_HOME}/conf/grouping_rules.conf && \
-    #cp ${CYGNUS_HOME}/cygnus-ngsi/conf/name_mappings.conf.template ${FLUME_HOME}/conf/name_mappings.conf && \
-\
+    cp ${CYGNUS_HOME}/cygnus-ngsi/conf/grouping_rules.conf.template ${FLUME_HOME}/conf/grouping_rules.conf && \
     echo "INFO: Create Cygnus log folder" && \
     mkdir -p /var/log/cygnus && \
-\
     echo "INFO: Cleanup to thin the final image... doing optimizations..." && \
-    echo "INFO: Java runtime doesnt need JAVA_HOME... Unsetting..." && \
+    echo "INFO: Java runtime not needs JAVA_HOME... Unsetting..." && \
     unset JAVA_HOME && \
     cd ${CYGNUS_HOME}/cygnus-common && \
     ${MVN_HOME}/bin/mvn ${MAVEN_ARGS} clean && \
@@ -131,7 +123,6 @@ RUN \
     bash -c 'localedef --list-archive | grep -v -e "en_US" | xargs localedef --delete-from-archive' && \
     /bin/cp -f /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl && \
     build-locale-archive && find ${CYGNUS_HOME} -name '.[^.]*' 2>/dev/null | xargs -r rm -rf && \
-\
     echo "INFO: Compacting Cygnus jar files..." && \
     # Some class needs to pass file because bytecode errors of old jar dependencies
     pack200 -J-Xmx512m -J-XX:MaxPermSize=128m --effort=5 --segment-limit=786432 --modification-time=latest --pass-file=org/apache/hadoop/hive/shims/Hadoop23Shims.class \
@@ -142,11 +133,9 @@ RUN \
       ${FLUME_HOME}/plugins.d/cygnus/lib/cygnus-ngsi-${CYGNUS_VERSION}-jar-with-dependencies.jar && \
     rm -f ${FLUME_HOME}/plugins.d/cygnus/libext/cygnus-common-${CYGNUS_VERSION}-jar-with-dependencies.jar && \
     rm -f ${FLUME_HOME}/plugins.d/cygnus/lib/cygnus-ngsi-${CYGNUS_VERSION}-jar-with-dependencies.jar && \
-\
     echo "INFO: Copy some files needed for starting cygnus-ngsi" && \
     cp -p ${CYGNUS_HOME}/docker/cygnus-ngsi/cygnus-entrypoint.sh / && \
     cp -p ${CYGNUS_HOME}/docker/cygnus-ngsi/agent.conf ${FLUME_HOME}/conf/ && \
-    cp -p ${CYGNUS_HOME}/docker/cygnus-ngsi/name_mappings.conf ${FLUME_HOME}/conf/ && \
     cp -p ${CYGNUS_HOME}/docker/cygnus-ngsi/cartodb_keys.conf ${FLUME_HOME}/conf/
 
 # Define the entry point

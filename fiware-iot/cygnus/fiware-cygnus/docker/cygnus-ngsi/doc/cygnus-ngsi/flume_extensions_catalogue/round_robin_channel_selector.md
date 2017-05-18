@@ -1,2 +1,0 @@
-# RoundRobinChannelSelector
-Coming soon.
