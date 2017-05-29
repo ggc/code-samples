@@ -1,0 +1,1 @@
+touch /var/log/cygnus/cygnus.log && tail -f /var/log/cygnus/cygnus.log

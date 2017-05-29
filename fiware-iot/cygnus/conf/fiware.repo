@@ -1,0 +1,5 @@
+[Fiware]
+name=FIWARE repository
+baseurl=http://repositories.lab.fiware.org/repo/rpm/6/
+gpgcheck=0
+enabled=1
