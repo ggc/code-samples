@@ -1,0 +1,56 @@
+version: '2.1'
+services:
+    mysql:
+        image: mysql
+        container_name: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=r00t
+        # restart: always
+        volumes: 
+            - ./volumes/mysql:/var/lib/mysql
+        ports:
+            - "3306"
+        networks:
+            fiware-network:
+                ipv4_address: 172.18.0.2
+    mongo:
+        image: mongo:3.2
+        container_name: mongo
+        command: --nojournal
+        ports:
+            - "27017"
+        volumes:
+            - ./volumes/mongo:/data/db
+        networks:
+            fiware-network:
+                ipv4_address: 172.18.0.3
+    orion:
+        image: fiware/orion
+        container_name: cb
+        links:
+            - mongo
+        ports:
+            - "1026"
+        command: -dbhost mongo
+        networks:
+            fiware-network:
+                ipv4_address: 172.18.0.4
+    cygnus:
+        build: 
+            context: ./cygnus
+            # dockerfile: ./docker/cygnus-ngsi/Dockerfile
+            dockerfile: ./Dockerfile
+        container_name: cygnus
+        ports:
+            - "5050"
+            - "8081"
+        volumes:
+            - ./volumes/cygnus:/usr/cygnus
+        networks:
+            fiware-network:
+                ipv4_address: 172.18.0.5
+networks:
+    fiware-network:
+        external: true
+volumes:
+    mongodb_volume:
