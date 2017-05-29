@@ -1,0 +1,329 @@
+{
+    "subscriptionId" : "592c0d4ed75fc19ca99ff98c",
+    "originator" : "localhost",
+    "contextResponses" : [    
+        {
+            "contextElement" : {
+                "type" : "Persona",
+                "isPattern" : "false",
+                "id" : "11111",
+                "attributes" : [          
+                    {
+                        "name" : "Abril",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "AceptaCondiciones",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Agosto",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Antiguedad",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Aparcamiento",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "AparcamientoNombre",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Apellido1",
+                        "type" : "string",
+                        "value" : "G"          
+                    },
+                    {
+                        "name" : "Apellido2",
+                        "type" : "string",
+                        "value" : "C"          
+                    },
+                    {
+                        "name" : "Apellidos",
+                        "type" : "string",
+                        "value" : "GC"          
+                    },
+                    {
+                        "name" : "Area",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "AsignacionesRealizadas",
+                        "type" : "int",
+                        "value" : 0          
+                    },
+                    {
+                        "name" : "Bonus",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ColorCoche1",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ColorCoche2",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ColorCoche3",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "DNI",
+                        "type" : "string",
+                        "value" : "1234567XY"          
+                    },
+                    {
+                        "name" : "Desempenio",
+                        "type" : "string",
+                        "value" : "Desempeniador"          
+                    },
+                    {
+                        "name" : "Diciembre",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Edificio",
+                        "type" : "string",
+                        "value" : "O1"          
+                    },
+                    {
+                        "name" : "EdificioNombre",
+                        "type" : "string",
+                        "value" : "DCW01"          
+                    },
+                    {
+                        "name" : "Email",
+                        "type" : "string",
+                        "value" : "gabriel.galancasillas@telefonica.com"          
+                    },
+                    {
+                        "name" : "Empresa",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "EmpresaContratada",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Enero",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Febrero",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "FechaAceptaCondiciones",
+                        "type" : "DateTime",
+                        "value" : "2017-05-22T09:12:44.00Z"          
+                    },
+                    {
+                        "name" : "FechaIncorporacionEmpresaActual",
+                        "type" : "DateTime",
+                        "value" : "2017-05-22T09:12:44.00Z"          
+                    },
+                    {
+                        "name" : "Frecuencia",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Idioma",
+                        "type" : "string",
+                        "value" : "eng"          
+                    },
+                    {
+                        "name" : "InicioAnio",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Julio",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Junio",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "MarcaCoche1",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "MarcaCoche2",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "MarcaCoche3",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Marzo",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Matricula",
+                        "type" : "string",
+                        "value" : "cx11111"          
+                    },
+                    {
+                        "name" : "MatriculaCoche1",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "MatriculaCoche2",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "MatriculaCoche3",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Mayo",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Migrado",
+                        "type" : "string",
+                        "value" : "SI"          
+                    },
+                    {
+                        "name" : "Miscelanea",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ModeloCoche1",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ModeloCoche2",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "ModeloCoche3",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Movil",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Nivel",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Nombre",
+                        "type" : "string",
+                        "value" : "G"          
+                    },
+                    {
+                        "name" : "Noviembre",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Octubre",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "Proximidad",
+                        "type" : "int",
+                        "value" : 0          
+                    },
+                    {
+                        "name" : "PuestoDeTrabajo",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "RankingCesionDinamica",
+                        "type" : "int",
+                        "value" : null          
+                    },
+                    {
+                        "name" : "RankingCesionInicial",
+                        "type" : "int",
+                        "value" : null          
+                    },
+                    {
+                        "name" : "Septiembre",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "SolicitaParking",
+                        "type" : "string",
+                        "value" : "c"          
+                    },
+                    {
+                        "name" : "TipoPerfilUsuarioParkingDT",
+                        "type" : "string",
+                        "value" : ""          
+                    },
+                    {
+                        "name" : "TipoPersona",
+                        "type" : "string",
+                        "value" : "solicitante"          
+                    },
+                    {
+                        "name" : "UID",
+                        "type" : "string",
+                        "value" : "cx11111@TESA"          
+                    },
+                    {
+                        "name" : "applicationID",
+                        "type" : "string",
+                        "value" : "TSP_SCT_7"          
+                    },
+                    {
+                        "name" : "timeInstant",
+                        "type" : "DateTime",
+                        "value" : "2017-05-22T09:12:44.00Z"          
+                    }        
+                ]      
+            },
+            "statusCode" : {
+                "code" : "200",
+                "reasonPhrase" : "OK"      
+            }    
+        }  
+    ]
+}

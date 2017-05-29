@@ -1,0 +1,315 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Orion API",
+		"_postman_id": "27fe04b0-53cc-3acc-e898-a5849a27e04d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request unscoped token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"postman.setEnvironmentVariable(\"AUTH-TOKEN\", responseBody);",
+							"tests[\"Is a string\"] = typeof responseBody === \"string\""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://192.168.137.132:1026/token",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{USER}}\",\n\t\"password\": \"{{PASSWORD}}\"\n}"
+				},
+				"description": "Gets token and saves it in a env var"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all types",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:1026/v2/types?options=values",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Content-Type",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "//fiware-service",
+						"value": "{{Fiware-Service}}",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//fiware-servicepath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//x-auth-token",
+						"value": "{{user-token}}",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entity creation sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 201;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "//X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"Thing_001\",\n\t\"type\": \"Raspberry\",\n\t\"city_location\": {\n\t\t\"value\": \"Madrid\",\n\t\t\"type\": \"City\"\n\t},\n\t\"temperature\": {\n\t\t\"value\": 24,\n\t\t\"type\": \"Number\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get all entities",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"Mientidad-001\",\n\t\"type\": \"User\",\n\t\"city_location\": {\n\t\t\"value\": \"Madrid\",\n\t\t\"type\": \"City\"\n\t},\n\t\"temperature\": {\n\t\t\"value\": 24,\n\t\t\"type\": \"Number\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entity query sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities/Thing_001",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"Mientidad-001\",\n\t\"type\": \"User\",\n\t\"city_location\": {\n\t\t\"value\": \"Madrid\",\n\t\t\"type\": \"City\"\n\t},\n\t\"temperature\": {\n\t\t\"value\": 24,\n\t\t\"type\": \"Number\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entity mod sample",
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities/Mientidad-001/attrs/temperature",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "//X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"value\": 777,\n\t\"type\": \"Number\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entity mod sample - Compact",
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities/Mientidad-001/attrs/temperature/value",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "2"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entity deletion sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 204;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities/Thing_001",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Query sample with Pattern",
+			"request": {
+				"url": "192.168.137.132:1026/v2/entities?idPattern=Issue49[0-9]",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{AUTH-TOKEN}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "idPattern, type and with Simple Query Language on query"
+			},
+			"response": []
+		}
+	]
+}

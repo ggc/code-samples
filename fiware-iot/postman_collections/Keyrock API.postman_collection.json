@@ -1,0 +1,205 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Keyrock API",
+		"_postman_id": "7a3914a6-e096-314d-1334-b49e5189e82e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request unscoped token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Is not an error\"] = !responseBody.has(\"error\");",
+							"tests[\"user-token header is present\"] = postman.getResponseHeader(\"X-Subject-Token\");",
+							"",
+							"postman.setEnvironmentVariable(\"user-token\", postman.getResponseHeader(\"X-Subject-Token\"));"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "192.168.137.132:5000/v3/auth/tokens",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"password\"\n            ],\n            \"password\": {\n                \"user\": {\n                    \"domain\": {\n                        \"name\": \"Default\"\n                    },\n                    \"name\": \"{{keyrock_name_admin}}\",\n                    \"password\": \"{{keyrock_password_admin}}\"\n                }\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create credential",
+			"request": {
+				"url": "192.168.137.132:5000/v3/credentials",
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"credential\": {\r\n        \"blob\": \"{\\\"access\\\":\\\"181920\\\",\\\"secret\\\":\\\"secretKey\\\"}\",\r\n        \"project_id\": \"731fc6f265cd486d900f16e84c5cb594\",\r\n        \"type\": \"ec2\",\r\n        \"user_id\": \"bb5476fd12884539b41d5a88f838d773\"\r\n    }\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"request": {
+				"url": "192.168.137.132:5000/v3/users",
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": {\r\n        \"default_project_id\": \"idm_project\",\r\n        \"domain_id\": \"default\",\r\n        \"enabled\": true,\r\n        \"usename\": \"ggc\",\r\n        \"name\": \"ggc\",\r\n        \"password\": \"idm\"\r\n    }\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"request": {
+				"url": "192.168.137.132:5000/v3/users/ggc",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get projects",
+			"request": {
+				"url": "192.168.137.132:5000/v3/credentials",
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"credential\": {\r\n        \"blob\": \"{\\\"access\\\":\\\"181920\\\",\\\"secret\\\":\\\"secretKey\\\"}\",\r\n        \"project_id\": \"731fc6f265cd486d900f16e84c5cb594\",\r\n        \"type\": \"ec2\",\r\n        \"user_id\": \"bb5476fd12884539b41d5a88f838d773\"\r\n    }\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get projects",
+			"request": {
+				"url": "192.168.137.132:5000/v3/projects",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get domains",
+			"request": {
+				"url": "192.168.137.132:5000/v3/domains",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get users",
+			"request": {
+				"url": "192.168.137.132:5000/v3/users",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

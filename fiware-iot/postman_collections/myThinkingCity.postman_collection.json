@@ -1,0 +1,2112 @@
+{
+	"variables": [],
+	"info": {
+		"name": "myThinkingCity",
+		"_postman_id": "7766e263-b79d-1e83-2f5b-15b72b7e28c9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "tests",
+			"description": "",
+			"item": [
+				{
+					"name": "Customer APIs - Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 201;",
+									"tests[\"Is not an error\"] = !responseBody.has(\"error\");",
+									"tests[\"user-token header is present\"] = postman.getResponseHeader(\"X-Subject-Token\");",
+									"",
+									"postman.setEnvironmentVariable(\"user-token\", postman.getResponseHeader(\"X-Subject-Token\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{keystone-host}}/v3/auth/tokensd",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"password\"\n            ],\n            \"password\": {\n                \"user\": {\n                    \"domain\": {\n                        \"name\": \"{{Fiware-Service}}\"\n                    },\n                    \"name\": \"{{user-name}}\",\n                    \"password\": \"{{user-pass}}\"\n                }\n            }\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create Cesion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v1/contextEntities",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \".O3B01PA01-01012017-00-24\",\n\t\"type\": \"Cesion\",\n\t\"attributes\": [\n\t\t\t{\n\t            \"name\": \"Aparcamiento\",\n\t            \"type\": \"string\",\n\t            \"value\": \"O1 SP0 A1\"\n        \t},\n        \t{\n\t            \"name\": \"AparcamientoNombre\",\n\t            \"type\": \"string\",\n\t            \"value\": \"DCW01 SP0 A1\"\n            },\n        \t{\n\t            \"name\": \"Cesor\",\n\t            \"type\": \"string\",\n\t            \"value\": \"cx11111\"\n        \t},\n        \t{\n\t            \"name\": \"CesorEdificio\",\n\t            \"type\": \"string\",\n\t            \"value\": \"O1\"\n        \t},\n        \t{\n\t            \"name\": \"CesorEmail\",\n\t            \"type\": \"string\",\n\t            \"value\": \"{{email}}\"\n        \t},\n        \t{\n\t            \"name\": \"CesorEstado\",\n\t            \"type\": \"string\",\n\t            \"value\": \"Recuperacion\"\n        \t},\n        \t{\n\t            \"name\": \"CesorID\",\n\t            \"type\": \"string\",\n\t            \"value\": \"11111\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"CesorUID\",\n\t            \"type\": \"string\",\n\t            \"value\": \"cx11111@TESA\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"EstadoPlaza\",\n\t            \"type\": \"string\",\n\t            \"value\": \"LIBRE-CEDIDA\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaCesion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"2017-01-09T00:00:00.000Z\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraAsignacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraConfirmacionAnulacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraConfirmacionAsignacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraLecturaNotificacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraLimite\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"2017-01-08T23:00:00.000Z\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraPeticion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"2016-12-29T15:50:35.311Z\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraPeticionDesestimacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraReasignacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraRechazoAsignacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"FechaHoraSolicitudAnulacion\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"2016-12-29T16:08:27.226Z\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"HoraFinCesion\",\n\t            \"type\": \"string\",\n\t            \"value\": \"24\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"HoraInicialCesion\",\n\t            \"type\": \"string\",\n\t            \"value\": \"00\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"MensajeError\",\n\t            \"type\": \"string\",\n\t            \"value\": \"no\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"PersonaBeneficiariaEstado\",\n\t            \"type\": \"string\",\n\t            \"value\": \"\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"PersonaBeneficiariaPlaza\",\n\t            \"type\": \"string\",\n\t            \"value\": \"no\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"PersonaBeneficiariaPlazaEmail\",\n\t            \"type\": \"string\",\n\t            \"value\": \"no\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"PersonaBeneficiariaPlazaID\",\n\t            \"type\": \"string\",\n\t            \"value\": \"no\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"applicationID\",\n\t            \"type\": \"string\",\n\t            \"value\": \"GIS_SP\"\n\t\t\t},\n\t\t\t{\n\t            \"name\": \"timeInstant\",\n\t            \"type\": \"DateTime\",\n\t            \"value\": \"2017-03-13T00:00:00.226Z\"\n\t\t\t}\n        ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cesion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var json = [",
+									"    {",
+									"        \"name\": \"Aparcamiento\",",
+									"        \"value\": \"O1 SP0 A1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"AparcamientoNombre\",",
+									"        \"value\": \"DCW01 SP0 A1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"Cesor\",",
+									"        \"value\": \"cx11111\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEdificio\",",
+									"        \"value\": \"O1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEmail\",",
+									"        \"value\": \"gabriel.galancasillas@telefonica.com\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEstado\",",
+									"        \"value\": \"Recuperacion\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorID\",",
+									"        \"value\": \"11111\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorUID\",",
+									"        \"value\": \"cx11111@TESA\"",
+									"    },",
+									"    {",
+									"        \"name\": \"EstadoPlaza\",",
+									"        \"value\": \"LIBRE-CEDIDA\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaCesion\",",
+									"        \"value\": \"2017-01-09T00:00:00.000Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraConfirmacionAnulacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraConfirmacionAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraLecturaNotificacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraLimite\",",
+									"        \"value\": \"2017-01-08T23:00:00.000Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraPeticion\",",
+									"        \"value\": \"2016-12-29T15:50:35.311Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraPeticionDesestimacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraReasignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraRechazoAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraSolicitudAnulacion\",",
+									"        \"value\": \"2016-12-29T16:08:27.226Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"HoraFinCesion\",",
+									"        \"value\": \"24\"",
+									"    },",
+									"    {",
+									"        \"name\": \"HoraInicialCesion\",",
+									"        \"value\": \"00\"",
+									"    },",
+									"    {",
+									"        \"name\": \"MensajeError\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaEstado\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlaza\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlazaEmail\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlazaID\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"applicationID\",",
+									"        \"value\": \"GIS_SP\"",
+									"    },",
+									"    {",
+									"        \"name\": \"timeInstant\",",
+									"        \"value\": \"2017-03-13T00:00:00.226Z\"",
+									"    }",
+									"];",
+									"",
+									"tests[\"Body has contextResponses\"] = responseBody.has(\"contextResponses\");",
+									"tests[\"Body has contextElement\"] = responseBody.has(\"contextElement\");",
+									"",
+									"",
+									"body = JSON.parse(responseBody);",
+									"var isEqual = function() {",
+									"    ret = true;",
+									"    attrs = body.contextResponses[0].contextElement.attributes;",
+									"    for (let i in attrs){",
+									"        if( attrs[i].name != json[i].name || attrs[i].value != json[i].value ){",
+									"            ret = false;",
+									"            tests[attrs[i].name+' != '+json[i].value] = false;",
+									"        }",
+									"    }",
+									"    return ret;",
+									"};",
+									"",
+									"tests['json response match'] = isEqual();",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v1/queryContext",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"entities\": [\n\t\t{\n\t\t\t\"type\": \"Cesion\",\n\t\t\t\"isPattern\": \"false\",\n\t\t\t\"id\": \".O3B01PA01-01012017-00-24\"\n\t\t}\n\t]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cesion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v1/contextEntities",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \".O3B01PA01-01012017-00-24\",\n\t\"type\": \"Cesion\",\n\t\"attributes\": [\n        \t{\n\t            \"name\": \"Cesor\",\n\t            \"type\": \"string\",\n\t            \"value\": \"cx22334\"\n        \t}\n        ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cesion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var json = [",
+									"    {",
+									"        \"name\": \"Aparcamiento\",",
+									"        \"value\": \"O1 SP0 A1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"AparcamientoNombre\",",
+									"        \"value\": \"DCW01 SP0 A1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"Cesor\",",
+									"        \"value\": \"cx22334\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEdificio\",",
+									"        \"value\": \"O1\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEmail\",",
+									"        \"value\": environment.email",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorEstado\",",
+									"        \"value\": \"Recuperacion\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorID\",",
+									"        \"value\": \"11111\"",
+									"    },",
+									"    {",
+									"        \"name\": \"CesorUID\",",
+									"        \"value\": \"cx11111@TESA\"",
+									"    },",
+									"    {",
+									"        \"name\": \"EstadoPlaza\",",
+									"        \"value\": \"LIBRE-CEDIDA\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaCesion\",",
+									"        \"value\": \"2017-01-09T00:00:00.000Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraConfirmacionAnulacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraConfirmacionAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraLecturaNotificacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraLimite\",",
+									"        \"value\": \"2017-01-08T23:00:00.000Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraPeticion\",",
+									"        \"value\": \"2016-12-29T15:50:35.311Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraPeticionDesestimacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraReasignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraRechazoAsignacion\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"FechaHoraSolicitudAnulacion\",",
+									"        \"value\": \"2016-12-29T16:08:27.226Z\"",
+									"    },",
+									"    {",
+									"        \"name\": \"HoraFinCesion\",",
+									"        \"value\": \"24\"",
+									"    },",
+									"    {",
+									"        \"name\": \"HoraInicialCesion\",",
+									"        \"value\": \"00\"",
+									"    },",
+									"    {",
+									"        \"name\": \"MensajeError\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaEstado\",",
+									"        \"value\": \"\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlaza\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlazaEmail\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"PersonaBeneficiariaPlazaID\",",
+									"        \"value\": \"no\"",
+									"    },",
+									"    {",
+									"        \"name\": \"applicationID\",",
+									"        \"value\": \"GIS_SP\"",
+									"    },",
+									"    {",
+									"        \"name\": \"timeInstant\",",
+									"        \"value\": \"2017-03-13T00:00:00.226Z\"",
+									"    }",
+									"];",
+									"",
+									"tests[\"Body has contextResponses\"] = responseBody.has(\"contextResponses\");",
+									"tests[\"Body has contextElement\"] = responseBody.has(\"contextElement\");",
+									"",
+									"",
+									"body = JSON.parse(responseBody);",
+									"var isEqual = function() {",
+									"    ret = true;",
+									"    attrs = body.contextResponses[0].contextElement.attributes;",
+									"    for (let i in attrs){",
+									"        if( attrs[i].name != json[i].name || attrs[i].value != json[i].value ){",
+									"            ret = false;",
+									"            tests[attrs[i].name+': '+attrs[i].value+' != '+json[i].value] = false;",
+									"        }",
+									"    }",
+									"    return ret;",
+									"};",
+									"",
+									"tests['json response match'] = isEqual();"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v1/queryContext",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"entities\": [\n\t\t{\n\t\t\t\"type\": \"Cesion\",\n\t\t\t\"isPattern\": \"false\",\n\t\t\t\"id\": \".O3B01PA01-01012017-00-24\"\n\t\t}\n\t]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cesion (not allowed)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v1/updateContext",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"contextElements\": [\n        {\n            \"type\": \"Cesion\",\n            \"isPattern\": \"false\",\n            \"id\": \".O3B01PA01-01012017-00-24\"\n        }\n    ],\n    \"updateAction\": \"DELETE\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "v2",
+			"description": "Queries with FIWARE-ORION version 2 NGSI10",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Is not an error\"] = !responseBody.has(\"error\");",
+									"tests[\"user-token header is present\"] = postman.getResponseHeader(\"X-Subject-Token\");",
+									"",
+									"postman.setEnvironmentVariable(\"user-token\", postman.getResponseHeader(\"X-Subject-Token\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{keystone-host}}/v3/auth/tokens",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"password\"\n            ],\n            \"password\": {\n                \"user\": {\n                    \"domain\": {\n                        \"name\": \"{{Fiware-Service}}\"\n                    },\n                    \"name\": \"{{user-name}}\",\n                    \"password\": \"{{user-pass}}\"\n                }\n            }\n        }\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "App API - Get me",
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Persona&q=Email=={{email}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"false\",\n            \"id\": \"Persona\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Email==gabriel.galancasillas@telefonica.com\"\n             }\n        ]\n     }\n}"
+						},
+						"description": "Me is defined by email"
+					},
+					"response": []
+				},
+				{
+					"name": "App API - Set type",
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities/11111/attrs",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Fiware-Service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "Fiware-ServicePath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"TipoPersona\": {\n\t\t\"value\": \"solicitante\",\n\t\t\"type\": \"String\"\n\t}\n}"
+						},
+						"description": "Set type as Cedente or Solicitante"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all types",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/types?options=values",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get today Cesiones",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var today = new Date();",
+									"postman.setGlobalVariable(\"today\", today.toISOString().substr(0,10));"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Cesion&details=on&options=keyValues,count&limit=1000&q=FechaCesion~={{today}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get last 10 Cesiones orderedBy Date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var today = new Date();",
+									"postman.setGlobalVariable(\"today\", today.toISOString().substr(0,10));"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Cesion&details=on&options=keyValues,count&limit=10&orderBy=!timeInstant",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get {{email}} last Gestion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var today = new Date();",
+									"postman.setGlobalVariable(\"today\", today.toISOString().substr(0,10));"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Cesion&details=on&options=keyValues,count&limit=1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Solicitantes activos (count in header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Persona&details=on&options=keyValues,count&limit=100&q=TipoPersona:solicitante;SolicitaParking==Activo",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get numero plazas (count in header)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Persona&details=on&options=keyValues,count&limit=100&q=TipoPersona:solicitante;SolicitaParking==Activo",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete my future (Compare date doesnt fucking work)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var today = new Date();",
+									"postman.setGlobalVariable(\"today\", today);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{cb-host}}/v2/entities?type=Cesion&details=on&options=keyValues,count&q=FechaCesion>{{today}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "//Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "fiware-service",
+								"value": "{{Fiware-Service}}",
+								"description": ""
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "{{Fiware-ServicePath}}",
+								"description": ""
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{user-token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer APIs - Login ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Is not an error\"] = !responseBody.has(\"error\");",
+							"tests[\"user-token header is present\"] = postman.getResponseHeader(\"X-Subject-Token\");",
+							"",
+							"postman.setEnvironmentVariable(\"user-token\", postman.getResponseHeader(\"X-Subject-Token\"));"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{keystone-host}}/v3/auth/tokens",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"password\"\n            ],\n            \"password\": {\n                \"user\": {\n                    \"domain\": {\n                        \"name\": \"{{Fiware-Service}}\"\n                    },\n                    \"name\": \"{{user-name}}\",\n                    \"password\": \"{{user-pass}}\"\n                }\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer APIs - Check token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{keystone-host}}/v3/auth/tokens",
+				"method": "HEAD",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{user-token}}",
+						"description": ""
+					},
+					{
+						"key": "x-subject-token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"password\"\n            ],\n            \"password\": {\n                \"user\": {\n                    \"domain\": {\n                        \"name\": \"{{Fiware-Service}}\"\n                    },\n                    \"name\": \"{{user-name}}\",\n                    \"password\": \"{{user-pass}}\"\n                }\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append ENVUELO-CEDIDA copy",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"contextElements\": [\n        {\n            \"id\": \"A1 B01P A32-30092016-00-24\",\n            \"type\": \"Cesion\",\n            \"isPattern\": \"false\",\n            \"attributes\": [\n            \t{\"name\": \"Aparcamiento\", \"type\": \"string\", \"value\": \"NW B01P A32\"},\n            \t{\"name\": \"AparcamientoNombre\", \"type\": \"string\", \"value\": \"DCW04 B01P A32\"},\n            \t{\"name\": \"Cesor\", \"type\": \"string\", \"value\": \"HA00039\"},\n            \t{\"name\": \"CesorEdificio\", \"type\": \"string\", \"value\": \"O2\"},\n            \t{\"name\": \"CesorEmail\", \"type\": \"string\", \"value\": \"pilar.lopezsalmeron@telefonica.com\"},\n            \t{\"name\": \"CesorEstado\", \"type\": \"string\", \"value\": \"Cesion\"},\n            \t{\"name\": \"CesorID\", \"type\": \"string\", \"value\": \"HA00039\"},\n            \t{\"name\": \"CesorUID\", \"type\": \"string\", \"value\": \"HA00039@ANTARES\"},\n            \t{\"name\": \"CodigoError\", \"type\": \"string\", \"value\": \"0\"},\n            \t{\"name\": \"EstadoPlaza\", \"type\": \"string\" ,\"value\": \"ENVUELO-CEDIDA\"},\n            \t{\"name\": \"FechaCesion\", \"type\": \"ISO8601\", \"value\": \"2016-09-30T00:00:00.000Z\"},\n            \t{\"name\": \"FechaHoraAsignacion\", \"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraConfirmacionAnulacion\", \"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraConfirmacionAsignacion\", \"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraLecturaNotificacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraLimite\",\"type\": \"ISO8601\", \"value\": \"2016-12-31T00:00:00.000Z\"},\n            \t{\"name\": \"FechaHoraPeticion\",\"type\": \"ISO8601\", \"value\": \"2016-09-29T16:34:38.664Z\"},\n            \t{\"name\": \"FechaHoraPeticionDesestimacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraReasignacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraRechazoAsignacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"FechaHoraSolicitudAnulacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n            \t{\"name\": \"HoraFinCesion\",\"type\": \"string\",\"value\": \"24\"},\n                {\"name\": \"HoraInicialCesion\",\"type\": \"string\",\"value\": \"00\"},\n                {\"name\": \"MensajeError\",\"type\": \"string\",\"value\": \"no\"},\n                {\"name\": \"PersonaBeneficiariaEstado\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"PersonaBeneficiariaPlaza\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"PersonaBeneficiariaPlazaEmail\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"PersonaBeneficiariaPlazaID\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"applicationID\",\"type\": \"string\",\"value\": \"GIS_SP\"},               \n                {\"name\": \"timeInstant\",\"type\": \"ISO8601\",\"value\": \"2016-09-29T16:34:38.664Z\"}\n            ]\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity Cesion",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Cesion\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n    \"restriction\": {\n    \t\"scopes\": [\n    \t\t{\n    \t\t\t\"type\": \"FIWARE::StringQuery\",\n    \t\t\t\"value\": \"CesorEmail=={{email}}\"\n    \t\t}\n    \t]\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Update attribute values",
+			"request": {
+				"url": "https://{{cb-host}}/v1/contextEntities/ajlnentity/attributes/humidity",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"value\" : \"26.3\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command update",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"UPDATE\",\n    \"contextElements\": [\n        {\n            \"id\": \"DCE03 B01P B73-15042016-00-24\",\n            \"type\": \"Cesion\",\n            \"isPattern\": \"false\",\n            \"attributes\": [\n                {\n                    \"name\": \"Cesor\",\n                    \"type\": \"string\",\n                    \"value\": \"cx00004\"\n                },\n                {\n                    \"name\": \"estadoPlaza\",\n                    \"type\": \"string\",\n                    \"value\": \"ENVUELO-RECUPERADA\"\n                },\n                {\n                    \"name\": \"MensajeError\",\n                    \"type\": \"string\",\n                    \"value\": \"hola!\"\n                }\n            ]\n        }\n    ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"contextElements\": [\n        {\n            \"id\": \"DCE03 B01P B73-15042016-00-24\",\n            \"type\": \"Cesion\",\n            \"isPattern\": \"false\",\n            \"attributes\": [\n                {\"name\": \"Cesor\",\"type\": \"string\",\"value\": \"cx00004\"},\n                {\"name\": \"estadoPlaza\",\"type\": \"string\",\"value\": \"OCUPADA-NOCEDIDA\"},\n                {\"name\": \"FechaHoraPeticion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaCesion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"HoraInicialCesion\",\"type\": \"string\", \"value\": \"00\"},\n                {\"name\": \"HoraFinCesion\",\"type\": \"string\", \"value\": \"24\"},\n                {\"name\": \"Aparcamiento\",\"type\": \"string\", \"value\": \"DCE03 B01P B73\" },\n                {\"name\": \"FechaHoraAsignacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraLimite\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"PersonaBeneficiariaPlaza\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"FechaHoraReasignacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraLecturaNotificacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraRechazoAsignacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraConfirmacionAsignacion\",\"type\": \"ISO8601\",\"value\": \"\"},\n                {\"name\": \"FechaHoraPeticionDesestimacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraSolicitudAnulacion\",\"type\": \"ISO8601\", \"value\": \"\"},\n                {\"name\": \"FechaHoraConfirmacionAnulacion\",\"type\": \"ISO8601\",\"value\": \"\"},\n                {\"name\": \"MensajeError\",\"type\": \"string\",\"value\": \"SIN ERRORES\"},\n                {\"name\": \"applicationID\",\"type\": \"string\",\"value\": \"GIS_SP\"},\n                {\"name\": \"timeInstant\",\"type\": \"ISO8601\",\"value\": \"\"}\n            ]\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append -activacion",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"entities\": [\n        {\n            \"id\": \".*\",\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"attributes\": [\n                {\"name\": \"Activo_parking\", \"type\": \"string\", \"value\": \"sx00005\"}\n                ]\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Matricula==sx00005\"\n             }\n        ]\n     }\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "POST Request - GIS Server - esri - 02",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { responseJSON = JSON.parse(responseBody); }",
+							"catch (e) { }",
+							"",
+							"",
+							"tests[\"response has data\"] = responseJSON && responseJSON.data && (responseJSON.data.length === 256);",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://10.95.55.97:8125/setgestion",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"idGestion\" : \"DCE03 B01P B73-23052016-00-24\",\r\n        \"utimestamp\" : 1459836000,\r\n        \"Aparcamiento\" : \"DCE03 B01P B73\",\r\n        \"estadoPlaza\" : \"ENVUELO-NOCEDIDA\",\r\n        \"incidencia\" : \"no\",\r\n        \"ces_fecha_ini\" : \"23/05/2016\",\r\n        \"ces_fecha_fin\" : \"23/05/2016\",\r\n        \"cesor\" : \"cx00004\",     \r\n        \"FechaHoraPeticion\" : \"\",\r\n        \"FechaCesion\" :\"23/05/2016\",\r\n        \"FechaHoraAsignacion\" : \"\",\r\n        \"FechaHoraLimite\": \"20/05/2016\",        \r\n        \"PersonaBeneficiariaPlaza\" : \"\",\r\n        \"FechaHoraLecturaNotificacion\" : \"\",\r\n        \"FechaHoraRechazoAsignacion\" : \"\",\r\n        \"FechaHoraConfirmacionAsignacion\" : \"\",\r\n        \"FechaHoraDesestimacion\" : \"\",\r\n        \"FechaHoraSolicitudAnulacion\" : \"\",\r\n        \"FechaHoraConfirmacionAnulacion\" : \"\",\r\n        \"MensajeError\" : \"\",\r\n        \"timeInstant\" : \"\",\r\n        \"applicationID\" : \"\"\r\n}"
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "POST Request - GIS Server - cdb - 01",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { responseJSON = JSON.parse(responseBody); }",
+							"catch (e) { }",
+							"",
+							"",
+							"tests[\"response has data\"] = responseJSON && responseJSON.data && (responseJSON.data.length === 256);",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://10.95.55.116:8125/setgestion",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"idGestion\" : \"DCE03 B01P B73-23052016-00-24\",\r\n        \"utimestamp\" : 1459836000,\r\n        \"Aparcamiento\" : \"DCE03 B01P B73\",\r\n        \"estadoPlaza\" : \"ENVUELO-NOCEDIDA\",\r\n        \"incidencia\" : \"no\",\r\n        \"ces_fecha_ini\" : \"23/05/2016\",\r\n        \"ces_fecha_fin\" : \"23/05/2016\",\r\n        \"cesor\" : \"cx00004\",     \r\n        \"FechaHoraPeticion\" : \"\",\r\n        \"FechaCesion\" : \"23/05/2016\",\r\n        \"FechaHoraAsignacion\" : \"\",\r\n        \"FechaHoraLimite\": \"20/05/2016\",         \r\n        \"PersonaBeneficiariaPlaza\" : \"\",\r\n        \"FechaHoraLecturaNotificacion\" : \"\",\r\n        \"FechaHoraRechazoAsignacion\" : \"\",\r\n        \"FechaHoraConfirmacionAsignacion\" : \"\",\r\n        \"FechaHoraDesestimacion\" : \"\",\r\n        \"FechaHoraSolicitudAnulacion\" : \"\",\r\n        \"FechaHoraConfirmacionAnulacion\" : \"\",\r\n        \"MensajeError\" : \"\",\r\n        \"timeInstant\" : \"\",\r\n        \"applicationID\" : \"\"\r\n}"
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "POST Request - localhost",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { responseJSON = JSON.parse(responseBody); }",
+							"catch (e) { }",
+							"",
+							"",
+							"tests[\"response has data\"] = responseJSON && responseJSON.data && (responseJSON.data.length === 256);",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://localhost:8125/setgestion",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"idGestion\" : \"DCE03 B01P B73-23052016-00-24\",\r\n        \"utimestamp\" : 1470351600,\r\n        \"Aparcamiento\" : \"DCE03 B01P B73\",\r\n        \"estadoPlaza\" : \"LIBRE-ASIGNADA\",\r\n        \"incidencia\" : \"no\",\r\n        \"ces_fecha_ini\" : \"23/05/2016\",\r\n        \"ces_fecha_fin\" : \"23/05/2016\",\r\n        \"Cesor\" : \"cx00004\",     \r\n        \"FechaHoraPeticion\" : \"\",\r\n        \"FechaCesion\" : \"23/05/2016\",\r\n        \"FechaHoraAsignacion\" : \"\",\r\n        \"FechaHoraLimite\": \"20/05/2016\",\r\n        \"PersonaBeneficiariaPlaza\" : \"sx00004\",\r\n        \"FechaHoraLecturaNotificacion\" : \"\",\r\n        \"FechaHoraRechazoAsignacion\" : \"\",\r\n        \"FechaHoraConfirmacionAsignacion\" : \"\",\r\n        \"FechaHoraDesestimacion\" : \"\",\r\n        \"FechaHoraSolicitudAnulacion\" : \"\",\r\n        \"FechaHoraConfirmacionAnulacion\" : \"\",\r\n        \"MensajeError\" : \"no\",\r\n        \"timeInstant\" : \"08/05/2016\",\r\n        \"applicationID\" : \"TIS\"\r\n}"
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery",
+			"request": {
+				"url": "https://{{cb-host}}/v1/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Email==gabriel.galancasillas@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery_plazaParking",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"PlazaParking\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Edificio==N3;Planta==B02P;Plaza==F23\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append_Persona",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"contextElements\": [\n        {\n        \"type\": \"Persona\",\n        \"isPattern\": \"false\",\n        \"id\": \"10104\",\n        \"attributes\": [\n          {\n            \"name\": \"Abril\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"AceptaCondiciones\",\n            \"type\": \"string\",\n            \"value\": \"NO\"\n          },\n          {\n            \"name\": \"Agosto\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Antiguedad\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Aparcamiento\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"AparcamientoNombre\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Apellido1\",\n            \"type\": \"string\",\n            \"value\": \"FERNANDEZ\"\n          },\n          {\n            \"name\": \"Apellido2\",\n            \"type\": \"string\",\n            \"value\": \"RODRIGUEZ\"\n          },\n          {\n            \"name\": \"Apellidos\",\n            \"type\": \"string\",\n            \"value\": \"FERNANDEZ RODRIGUEZ\"\n          },\n          {\n            \"name\": \"Area\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"AsignacionesRealizadas\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Bonus\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"ColorCoche1\",\n            \"type\": \"string\",\n            \"value\": \"NULL\"\n          },\n          {\n            \"name\": \"ColorCoche2\",\n            \"type\": \"string\",\n            \"value\": \"NULL\"\n          },\n          {\n            \"name\": \"ColorCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"DNI\",\n            \"type\": \"string\",\n            \"value\": \"03469830G\"\n          },\n          {\n            \"name\": \"Desempenio\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Diciembre\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000400066660\"\n          },\n          {\n            \"name\": \"Edificio\",\n            \"type\": \"string\",\n            \"value\": \"O2\"\n          },\n          {\n            \"name\": \"EdificioNombre\",\n            \"type\": \"string\",\n            \"value\": \"DCW02\"\n          },\n          {\n            \"name\": \"Email\",\n            \"type\": \"string\",\n            \"value\": \"diana.fernandezrodriguez@telefonica.com\"\n          },\n          {\n            \"name\": \"Empresa\",\n            \"type\": \"string\",\n            \"value\": \"5\"\n          },\n          {\n            \"name\": \"EmpresaContratada\",\n            \"type\": \"string\",\n            \"value\": \"5\"\n          },\n          {\n            \"name\": \"Enero\",\n            \"type\": \"string\",\n            \"value\": \"Z0666600000000000000000000000000\"\n          },\n          {\n            \"name\": \"Febrero\",\n            \"type\": \"string\",\n            \"value\": \"Z00000000000000000000000000000\"\n          },\n          {\n            \"name\": \"FechaAceptaCondiciones\",\n            \"type\": \"ISO8601\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"FechaIncorporacionEmpresaActual\",\n            \"type\": \"DateTime\",\n            \"value\": \"2016-11-30T00:00:00.000Z\"\n          },\n          {\n            \"name\": \"Frecuencia\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Idioma\",\n            \"type\": \"string\",\n            \"value\": \"spa\"\n          },\n          {\n            \"name\": \"InicioAnio\",\n            \"type\": \"string\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Julio\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Junio\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"MarcaCoche1\",\n            \"type\": \"string\",\n            \"value\": \"VW\"\n          },\n          {\n            \"name\": \"MarcaCoche2\",\n            \"type\": \"string\",\n            \"value\": \"AUDI\"\n          },\n          {\n            \"name\": \"MarcaCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Marzo\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Matricula\",\n            \"type\": \"string\",\n            \"value\": \"CZ00165\"\n          },\n          {\n            \"name\": \"MatriculaCoche1\",\n            \"type\": \"string\",\n            \"value\": \"0572FHJ\"\n          },\n          {\n            \"name\": \"MatriculaCoche2\",\n            \"type\": \"string\",\n            \"value\": \"2083GGV\"\n          },\n          {\n            \"name\": \"MatriculaCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Mayo\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Migrado\",\n            \"type\": \"string\",\n            \"value\": \"SI\"\n          },\n          {\n            \"name\": \"Miscelanea\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"ModeloCoche1\",\n            \"type\": \"string\",\n            \"value\": \"PASSAT\"\n          },\n          {\n            \"name\": \"ModeloCoche2\",\n            \"type\": \"string\",\n            \"value\": \"A3\"\n          },\n          {\n            \"name\": \"ModeloCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Movil\",\n            \"type\": \"string\",\n            \"value\": \"600000000\"\n          },\n          {\n            \"name\": \"Nivel\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Nombre\",\n            \"type\": \"string\",\n            \"value\": \"DIANA\"\n          },\n          {\n            \"name\": \"Noviembre\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Octubre\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Proximidad\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"PuestoDeTrabajo\",\n            \"type\": \"string\",\n            \"value\": \"GESTION DISTRITO TELEFONICA\"\n          },\n          {\n            \"name\": \"RankingCesionDinamica\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"RankingCesionInicial\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Septiembre\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"SolicitaParking\",\n            \"type\": \"string\",\n            \"value\": \"Activo\"\n          },\n          {\n            \"name\": \"TipoPerfilUsuarioParkingDT\",\n            \"type\": \"string\",\n            \"value\": \"Sin Perfil\"\n          },\n          {\n            \"name\": \"TipoPersona\",\n            \"type\": \"string\",\n            \"value\": \"solicitante\"\n          },\n          {\n            \"name\": \"UID\",\n            \"type\": \"string\",\n            \"value\": \"CX10104@GIES\"\n          },\n          {\n            \"name\": \"applicationID\",\n            \"type\": \"string\",\n            \"value\": \"TOS_ETL_RIS\"\n          },\n          {\n            \"name\": \"timeInstant\",\n            \"type\": \"DateTime\",\n            \"value\": \"2017-01-01T00:00:00.000Z\"\n          }\n        ]\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append_Persona_Parking",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"contextElements\": [\n        {\n            \"id\": \"11223355\",\n            \"type\": \"Persona\",\n            \"isPattern\": \"false\",\n            \"attributes\": [\n                {\"name\": \"Apellido1\",\"type\": \"string\",\"value\": \"CEDENTE\"},\n                {\"name\": \"Apellido2\",\"type\": \"string\",\"value\": \"INVENTADO\"},\n                {\"name\": \"Apellidos\",\"type\": \"string\",\"value\": \"CEDENTE INVENTADO\"},\n                {\"name\": \"Nombre\",\"type\": \"string\", \"value\": \"CUASIMODO\"},\n                {\"name\": \"Matricula\",\"type\": \"string\", \"value\": \"cx00005\"},\n                {\"name\": \"Email\",\"type\": \"string\", \"value\": \"cuasimodo.cedenteinventado@telefonica.com\"},\n                {\"name\": \"Password\",\"type\": \"string\",\"value\": \"\"},\n                {\"name\": \"Movil\",\"type\": \"string\", \"value\": \"657123456\"},                \n                {\"name\": \"DNI\",\"type\": \"ISO8601\", \"value\": \"12345678Z\"},\n                {\"name\": \"Edificio\",\"type\": \"string\", \"value\": \"CENTRAL\"},\n                {\"name\": \"Empresa\",\"type\": \"IoTEntityEmpresa\", \"value\": \"162\"},\n                {\"name\": \"EmpresaContratada\",\"type\": \"IoTEntityEmpresa\", \"value\": \"162\"},\n                {\"name\": \"Pais\",\"type\": \"IoTEntityEmpresa\", \"value\": \"\"},\n                {\"name\": \"Idioma\",\"type\": \"string\", \"value\": \"spa\"},\n                {\"name\": \"Foto\",\"type\": \"string\", \"value\": \"D0000389\"},\n                {\"name\": \"IdAplicativo\",\"type\": \"string\", \"value\": \"TOS_ETL_INI_1\"},\n                {\"name\": \"MarcaCoche1\",\"type\": \"string\", \"value\": \"VOLKSWAGEN\"},\n                {\"name\": \"ModeloCoche1\",\"type\": \"string\", \"value\": \"PASSAT\"},                \n                {\"name\": \"ColorCoche1\",\"type\": \"string\", \"value\": \"VERDE\"},\n                {\"name\": \"MatriculaCoche1\",\"type\": \"string\", \"value\": \"1234GGG\"},\n                {\"name\": \"MarcaCoche2\",\"type\": \"string\", \"value\": \"RENAULT\"},\n                {\"name\": \"ModeloCoche2\",\"type\": \"string\", \"value\": \"MEGANE\"},\n                {\"name\": \"ColorCoche2\",\"type\": \"string\", \"value\": \"BLANCO\"},\n                {\"name\": \"MatriculaCoche2\",\"type\": \"string\", \"value\": \"5555FFF\"},\n                {\"name\": \"MarcaCoche3\",\"type\": \"string\", \"value\": \"CITROEN\"},\n                {\"name\": \"ModeloCoche3\",\"type\": \"string\", \"value\": \"C4\"},                \n                {\"name\": \"ColorCoche3\",\"type\": \"string\", \"value\": \"AZUL\"},\n                {\"name\": \"MatriculaCoche3\",\"type\": \"string\", \"value\": \"7890HHH\"},\n                {\"name\": \"MarcaCoche4\",\"type\": \"string\", \"value\": \"\"},\n                {\"name\": \"ModeloCoche4\",\"type\": \"string\", \"value\": \"\"},\n                {\"name\": \"ColorCoche4\",\"type\": \"string\", \"value\": \"\"},\n                {\"name\": \"MatriculaCoche4\",\"type\": \"string\", \"value\": \"\"},\n                {\"name\": \"Aparcamiento\",\"type\": \"string\", \"value\": \"N3 B02P F23\" },\n                {\"name\": \"Tipo_parking\",\"type\": \"string\", \"value\": \"cedente\" },\n                {\"name\": \"Activo_parking\",\"type\": \"string\", \"value\": \"Activo\" },\n                {\"name\": \"applicationID\",\"type\": \"string\",\"value\": \"GIS_SP\"},\n                {\"name\": \"timeInstant\",\"type\": \"ISO8601\",\"value\": \"Wed May 11 15:36:04 CEST 2016\"} \n            ]\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery_cesiones",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Cesion\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"PersonaBeneficiariaPlaza==diana.fernandezrodriguez@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery_persona",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Email==cx00004@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command delete cesion",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"DELETE\",\n    \"contextElements\": [\n        {\n            \"id\": \"{{idCesion}}\",\n            \"type\": \"Cesion\",\n            \"isPattern\": \"false\"\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery_conLimite",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext?offset=0&limit=1000",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Email==eva.chillonfernandez@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery_conLimite",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext?offset=0&limit=100",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Cesion\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"CesorEmail==vicente.montanomena@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity AllCesion",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/queryContext?offset=0&limit=1000",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"isPattern\": \"true\",\n            \"id\": \".*\",\n            \"type\": \"Cesion\"\n        }\n    ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Send command append_Persona_Parking TIS",
+			"request": {
+				"url": "https://{{cb-host}}/NGSI10/updateContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"updateAction\": \"APPEND\",\n    \"contextElements\": [\n        {\n        \"type\": \"Persona\",\n        \"isPattern\": \"false\",\n        \"id\": \"CZ00165\",\n        \"attributes\": [\n          {\n            \"name\": \"Abril\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"AceptaCondiciones\",\n            \"type\": \"string\",\n            \"value\": \"NO\"\n          },\n          {\n            \"name\": \"Agosto\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Antiguedad\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Aparcamiento\",\n            \"type\": \"string\",\n            \"value\": \"N2 B01P H31\"\n          },\n          {\n            \"name\": \"AparcamientoNombre\",\n            \"type\": \"string\",\n            \"value\": \"DCN02 B01P H31\"\n          },\n          {\n            \"name\": \"Apellido1\",\n            \"type\": \"string\",\n            \"value\": \"CARCAMO\"\n          },\n          {\n            \"name\": \"Apellido2\",\n            \"type\": \"string\",\n            \"value\": \"GABARI\"\n          },\n          {\n            \"name\": \"Apellidos\",\n            \"type\": \"string\",\n            \"value\": \"CARCAMO GABARI\"\n          },\n          {\n            \"name\": \"Area\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"AsignacionesRealizadas\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Bonus\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"ColorCoche1\",\n            \"type\": \"string\",\n            \"value\": \"NULL\"\n          },\n          {\n            \"name\": \"ColorCoche2\",\n            \"type\": \"string\",\n            \"value\": \"NULL\"\n          },\n          {\n            \"name\": \"ColorCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"DNI\",\n            \"type\": \"string\",\n            \"value\": \"03469830G\"\n          },\n          {\n            \"name\": \"Desempenio\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Diciembre\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000400066660\"\n          },\n          {\n            \"name\": \"Edificio\",\n            \"type\": \"string\",\n            \"value\": \"N2\"\n          },\n          {\n            \"name\": \"EdificioNombre\",\n            \"type\": \"string\",\n            \"value\": \"DCN02\"\n          },\n          {\n            \"name\": \"Email\",\n            \"type\": \"string\",\n            \"value\": \"Felix.Carcamo@telefonica.com\"\n          },\n          {\n            \"name\": \"Empresa\",\n            \"type\": \"string\",\n            \"value\": \"5\"\n          },\n          {\n            \"name\": \"EmpresaContratada\",\n            \"type\": \"string\",\n            \"value\": \"5\"\n          },\n          {\n            \"name\": \"Enero\",\n            \"type\": \"string\",\n            \"value\": \"Z0666600000000000000000000000000\"\n          },\n          {\n            \"name\": \"Febrero\",\n            \"type\": \"string\",\n            \"value\": \"Z00000000000000000000000000000\"\n          },\n          {\n            \"name\": \"FechaAceptaCondiciones\",\n            \"type\": \"ISO8601\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"FechaIncorporacionEmpresaActual\",\n            \"type\": \"DateTime\",\n            \"value\": \"2016-11-30T00:00:00.000Z\"\n          },\n          {\n            \"name\": \"Frecuencia\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Idioma\",\n            \"type\": \"string\",\n            \"value\": \"spa\"\n          },\n          {\n            \"name\": \"InicioAnio\",\n            \"type\": \"string\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Julio\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Junio\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"MarcaCoche1\",\n            \"type\": \"string\",\n            \"value\": \"VW\"\n          },\n          {\n            \"name\": \"MarcaCoche2\",\n            \"type\": \"string\",\n            \"value\": \"AUDI\"\n          },\n          {\n            \"name\": \"MarcaCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Marzo\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Matricula\",\n            \"type\": \"string\",\n            \"value\": \"CZ00165\"\n          },\n          {\n            \"name\": \"MatriculaCoche1\",\n            \"type\": \"string\",\n            \"value\": \"0572FHJ\"\n          },\n          {\n            \"name\": \"MatriculaCoche2\",\n            \"type\": \"string\",\n            \"value\": \"2083GGV\"\n          },\n          {\n            \"name\": \"MatriculaCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Mayo\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Migrado\",\n            \"type\": \"string\",\n            \"value\": \"SI\"\n          },\n          {\n            \"name\": \"Miscelanea\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"ModeloCoche1\",\n            \"type\": \"string\",\n            \"value\": \"PASSAT\"\n          },\n          {\n            \"name\": \"ModeloCoche2\",\n            \"type\": \"string\",\n            \"value\": \"A3\"\n          },\n          {\n            \"name\": \"ModeloCoche3\",\n            \"type\": \"string\",\n            \"value\": \"\"\n          },\n          {\n            \"name\": \"Movil\",\n            \"type\": \"string\",\n            \"value\": \"600000000\"\n          },\n          {\n            \"name\": \"Nivel\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"Nombre\",\n            \"type\": \"string\",\n            \"value\": \"FELIX VALENTIN\"\n          },\n          {\n            \"name\": \"Noviembre\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Octubre\",\n            \"type\": \"string\",\n            \"value\": \"Z0000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"Proximidad\",\n            \"type\": \"string\",\n            \"value\": \"3\"\n          },\n          {\n            \"name\": \"PuestoDeTrabajo\",\n            \"type\": \"string\",\n            \"value\": \"GESTION DISTRITO TELEFONICA\"\n          },\n          {\n            \"name\": \"RankingCesionDinamica\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"RankingCesionInicial\",\n            \"type\": \"int\",\n            \"value\": \"0\"\n          },\n          {\n            \"name\": \"Septiembre\",\n            \"type\": \"string\",\n            \"value\": \"Z000000000000000000000000000000\"\n          },\n          {\n            \"name\": \"SolicitaParking\",\n            \"type\": \"string\",\n            \"value\": \"Activo\"\n          },\n          {\n            \"name\": \"TipoPerfilUsuarioParkingDT\",\n            \"type\": \"string\",\n            \"value\": \"Sin Perfil\"\n          },\n          {\n            \"name\": \"TipoPersona\",\n            \"type\": \"string\",\n            \"value\": \"cedente\"\n          },\n          {\n            \"name\": \"UID\",\n            \"type\": \"string\",\n            \"value\": \"CZ00165@GIES\"\n          },\n          {\n            \"name\": \"applicationID\",\n            \"type\": \"string\",\n            \"value\": \"TOS_ETL_RIS\"\n          },\n          {\n            \"name\": \"timeInstant\",\n            \"type\": \"DateTime\",\n            \"value\": \"2017-01-01T00:00:00.000Z\"\n          }\n        ]\n        }\n    ]\n}"
+				},
+				"description": "Updates an entity or adds a new one it id doesn't exist"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Not migrated",
+			"request": {
+				"url": "https://{{cb-host}}/v1/queryContext?details=on",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n    \"attributes\": [\n    \t\"Email\",\n    \t\"Migrado\"\n    ],\n    \"restriction\": {\n    \t\"scopes\": [\n    \t\t{\n                \"type\": \"FIWARE::StringQuery\",\n                \"value\": \"Migrado!=SI\"\n    \t\t}\n    \t]\n    }\n}"
+				},
+				"description": "Retrieve not migrated users and\nCount (Check error code field at the end)"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Occupancy",
+			"request": {
+				"url": "https://{{cb-host}}/v1/queryContext?details=on&limit=10",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"HistoricoCesiones\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n    \"attributes\": [\n    \t\"timeInstant\",\n    \t\"idCesion\", \n    \t\"EstadoPlaza\",\n    \t\"FechaCesion\",\n    \t\"CesorEmail\",\n    \t\"PersonaBeneficiariaPlazaEmail\"\n    ],\n    \"restriction\": {\n    \t\"scopes\": [\n    \t\t{\n                \"type\": \"FIWARE::StringQuery\",\n                \"value\": \"EstadoPlaza==OCUPADA-ASIGNADA\"\n    \t\t}\n    \t]\n    }\n}"
+				},
+				"description": "Retrieve 5 last used parking lots and at the end\nThe total count"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Occupancy (offset=1000)",
+			"request": {
+				"url": "https://{{cb-host}}/v1/queryContext?details=on&offset=0&limit=1000",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"HistoricoCesiones\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n    \"restriction\": {\n    \t\"scopes\": [\n    \t\t{\n                \"type\": \"FIWARE::StringQuery\",\n                \"value\": \"EstadoPlaza!=OCUPADA-ASIGNADA\"\n    \t\t}\n    \t]\n    }\n}"
+				},
+				"description": "Retrieve 5 last used parking lots and at the end\nThe total count"
+			},
+			"response": []
+		},
+		{
+			"name": "App API - Get entity stringQuery copy",
+			"request": {
+				"url": "https://{{cb-host}}/v1/queryContext",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Fiware-Service",
+						"value": "{{Fiware-Service}}",
+						"description": ""
+					},
+					{
+						"key": "Fiware-ServicePath",
+						"value": "{{Fiware-ServicePath}}",
+						"description": ""
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{user-token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entities\": [\n        {\n            \"type\": \"Persona\",\n            \"isPattern\": \"true\",\n            \"id\": \".*\"\n        }\n    ],\n     \"restriction\": {\n         \"scopes\": [\n             {\n                  \"type\": \"FIWARE::StringQuery\",\n                   \"value\": \"Email==gabriel.galancasillas@telefonica.com\"\n             }\n        ]\n     }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
