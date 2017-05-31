@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang='en'>
+	<head>
+		
+
+	</head>
+	<body>
+
+		<h1>Hello world!</h1>
+		<div id='future'></div>
+		<form id='form' id='chat_form'>
+			<input id='chat_input' type='text'>
+			<input type='submit' value='Send'>
+		</form>
+
+		<script src='https://code.jquery.com/jquery-1.10.2.js'></script>
+		<script src='/socket.io/socket.io.js'></script>
+		<script>
+			var socket = io.connect('https://localhost:443'); // Disparado al conectarse EL navegador
+			socket.on('connect', function(data) {
+				socket.emit('join', 'Hello world from client');
+			});
+			
+			socket.on('broad', function(data) {
+				$('#future').html(data);
+			});
+
+			$('form').submit( function(e) {
+				e.preventDefault();
+				// var message = "Shit everywhere"; 
+				socket.emit('messages', $('#chat_input').val());
+			});
+		</script>
+
+	</body>
+</html>
