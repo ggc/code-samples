@@ -13,7 +13,7 @@ const options = {
 };
 
 
-app.set('port', 443)
+app.set('port', 3000)
 var server = https.createServer(options, app);
 var io = require('socket.io')(server); // Crea un websocket conectado al servidor
 

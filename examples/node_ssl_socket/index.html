@@ -16,7 +16,7 @@
 		<script src='https://code.jquery.com/jquery-1.10.2.js'></script>
 		<script src='/socket.io/socket.io.js'></script>
 		<script>
-			var socket = io.connect('https://localhost:443'); // Disparado al conectarse EL navegador
+			var socket = io.connect('https://localhost:3000'); // Disparado al conectarse EL navegador
 			socket.on('connect', function(data) {
 				socket.emit('join', 'Hello world from client');
 			});
