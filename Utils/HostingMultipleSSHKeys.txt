@@ -1,3 +1,7 @@
+# Command
+ssh -A -F <sshconfig file> <symbolic name>
+
+# sshconfig file
 # Commets of entry one
 Host github-codehere # symbolic name
     HostName github.com # To be replaced on user@[SymbolicName]...
