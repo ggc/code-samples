@@ -1,0 +1,576 @@
+{
+	"actionType": "APPEND",
+	"entities":
+	[
+		{
+			"type": "Cesion",
+			"id": "CesionInit",
+			"Aparcamiento": {
+				"value": "",
+				"type": "string"
+			},
+			"AparcamientoNombre": {
+				"value": "",
+				"type": "string"
+			},
+			"Cesor": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEdificio": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEmail": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEstado": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorID": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorUID": {
+				"value": "",
+				"type": "string"
+			},
+			"CodigoError": {
+				"value": "",
+				"type": "string"
+			},
+			"EstadoPlaza": {
+				"value": "",
+				"type": "string"
+			},
+			"FechaCesion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraAsignacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraConfirmacionAnulacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraConfirmacionAsignacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraLecturaNotificacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraLimite": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraPeticion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraPeticionDesestimacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraReasignacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraRechazoAsignacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraSolicitudAnulacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"HoraFinCesion": {
+				"value": "",
+				"type": "string"
+			},
+			"HoraInicialCesion": {
+				"value": "",
+				"type": "string"
+			},
+			"MensajeError": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaEstado": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlaza": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlazaEmail": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlazaID": {
+				"value": "",
+				"type": "string"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"estadoPBeneficiaria": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		},
+		{
+			"type": "HistoricoCesiones",
+			"id": "HistoricoCesionesInit",
+			"Aparcamiento": {
+				"value": "",
+				"type": "string"
+			},
+			"AparcamientoNombre": {
+				"value": "",
+				"type": "string"
+			},
+			"Cesor": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEdificio": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEmail": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorEstado": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorID": {
+				"value": "",
+				"type": "string"
+			},
+			"CesorUID": {
+				"value": "",
+				"type": "string"
+			},
+			"CodigoError": {
+				"value": "",
+				"type": "string"
+			},
+			"EstadoPlaza": {
+				"value": "",
+				"type": "string"
+			},
+			"FechaCesion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraAsignacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraLimite": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraPeticion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaHoraSolicitudAnulacion": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"HoraFinCesion": {
+				"value": "",
+				"type": "string"
+			},
+			"HoraInicialCesion": {
+				"value": "",
+				"type": "string"
+			},
+			"MensajeError": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaEstado": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlaza": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlazaEmail": {
+				"value": "",
+				"type": "string"
+			},
+			"PersonaBeneficiariaPlazaID": {
+				"value": "",
+				"type": "string"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		},
+		{
+			"type": "Juridica",
+			"id": "JuridicaInit",
+			"EmpresasAsignadas": {
+				"value": "",
+				"type": "string"
+			},
+			"Nombre": {
+				"value": "",
+				"type": "string"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		},
+		{
+			"type": "JuridicaParams",
+			"id": "JuridicaParamsInit",
+			"PesoAntiguedad": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoArea": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoBonus": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoDesempenio": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoFrecuencia": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoMiscelanea": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoNivel": {
+				"value": 0,
+				"type": "int"
+			},
+			"PesoProximidad": {
+				"value": 0,
+				"type": "int"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		},
+		{
+			"type": "Persona",
+			"id": "PersonaInit",
+			"Abril": {
+				"value": "",
+				"type": "string"
+			},
+			"AceptaCondiciones": {
+				"value": "",
+				"type": "string"
+			},
+			"Agosto": {
+				"value": "",
+				"type": "string"
+			},
+			"Antiguedad": {
+				"value": "",
+				"type": "string"
+			},
+			"Aparcamiento": {
+				"value": "",
+				"type": "string"
+			},
+			"AparcamientoNombre": {
+				"value": "",
+				"type": "string"
+			},
+			"Apellido1": {
+				"value": "",
+				"type": "string"
+			},
+			"Apellido2": {
+				"value": "",
+				"type": "string"
+			},
+			"Apellidos": {
+				"value": "",
+				"type": "string"
+			},
+			"Area": {
+				"value": "",
+				"type": "string"
+			},
+			"AsignacionesRealizadas": {
+				"value": 0,				
+				"type": "int"
+			},
+			"Bonus": {
+				"value": "",
+				"type": "string"
+			},
+			"ColorCoche1": {
+				"value": "",
+				"type": "string"
+			},
+			"ColorCoche2": {
+				"value": "",
+				"type": "string"
+			},
+			"ColorCoche3": {
+				"value": "",
+				"type": "string"
+			},
+			"DNI": {
+				"value": "",
+				"type": "string"
+			},
+			"Desempenio": {
+				"value": "",
+				"type": "string"
+			},
+			"Diciembre": {
+				"value": "",
+				"type": "string"
+			},
+			"Edificio": {
+				"value": "",
+				"type": "string"
+			},
+			"EdificioNombre": {
+				"value": "",
+				"type": "string"
+			},
+			"Email": {
+				"value": "",
+				"type": "string"
+			},
+			"Empresa": {
+				"value": "",
+				"type": "string"
+			},
+			"EmpresaContratada": {
+				"value": "",
+				"type": "string"
+			},
+			"Enero": {
+				"value": "",
+				"type": "string"
+			},
+			"Febrero": {
+				"value": "",
+				"type": "string"
+			},
+			"FechaAceptaCondiciones": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"FechaIncorporacionEmpresaActual": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			},
+			"Frecuencia": {
+				"value": "",
+				"type": "string"
+			},
+			"Idioma": {
+				"value": "",
+				"type": "string"
+			},
+			"InicioAnio": {
+				"value": "",
+				"type": "string"
+			},
+			"Julio": {
+				"value": "",
+				"type": "string"
+			},
+			"Junio": {
+				"value": "",
+				"type": "string"
+			},
+			"MarcaCoche1": {
+				"value": "",
+				"type": "string"
+			},
+			"MarcaCoche2": {
+				"value": "",
+				"type": "string"
+			},
+			"MarcaCoche3": {
+				"value": "",
+				"type": "string"
+			},
+			"Marzo": {
+				"value": "",
+				"type": "string"
+			},
+			"Matricula": {
+				"value": "",
+				"type": "string"
+			},
+			"MatriculaCoche1": {
+				"value": "",
+				"type": "string"
+			},
+			"MatriculaCoche2": {
+				"value": "",
+				"type": "string"
+			},
+			"MatriculaCoche3": {
+				"value": "",
+				"type": "string"
+			},
+			"Mayo": {
+				"value": "",
+				"type": "string"
+			},
+			"Migrado": {
+				"value": "",
+				"type": "string"
+			},
+			"Miscelanea": {
+				"value": "",
+				"type": "string"
+			},
+			"ModeloCoche1": {
+				"value": "",
+				"type": "string"
+			},
+			"ModeloCoche2": {
+				"value": "",
+				"type": "string"
+			},
+			"ModeloCoche3": {
+				"value": "",
+				"type": "string"
+			},
+			"Movil": {
+				"value": "",
+				"type": "string"
+			},
+			"Nivel": {
+				"value": "",
+				"type": "string"
+			},
+			"Nombre": {
+				"value": "",
+				"type": "string"
+			},
+			"Noviembre": {
+				"value": "",
+				"type": "string"
+			},
+			"Octubre": {
+				"value": "",
+				"type": "string"
+			},
+			"Proximidad": {
+				"value": "",
+				"type": "string"
+			},
+			"PuestoDeTrabajo": {
+				"value": "",
+				"type": "string"
+			},
+			"RankingCesionDinamica": {
+				"type": "int"
+			},
+			"RankingCesionInicial": {
+				"type": "int"
+			},
+			"Septiembre": {
+				"value": "",
+				"type": "string"
+			},
+			"SolicitaParking": {
+				"value": "",
+				"type": "string"
+			},
+			"TipoPerfilUsuarioParkingDT": {
+				"value": "",
+				"type": "string"
+			},
+			"TipoPersona": {
+				"value": "",
+				"type": "string"
+			},
+			"UID": {
+				"value": "",
+				"type": "string"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		},
+		{
+			"type": "PersonaRol",
+			"id": "PersonaRolInit",
+			"Email": {
+				"value": "",
+				"type": "string"
+			},
+			"Grupo": {
+				"value": "",
+				"type": "string"
+			},
+			"Password": {
+				"value": "",
+				"type": "string"
+			},
+			"Role": {
+				"value": "",
+				"type": "string"
+			},
+			"applicationID": {
+				"value": "",
+				"type": "string"
+			},
+			"timeInstant": {
+				"value": "2017-05-22T09:12:44Z",
+				"type": "DateTime"
+			}
+		}
+	]
+}
