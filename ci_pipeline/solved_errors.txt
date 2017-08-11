@@ -1,0 +1,5 @@
+# If gitlab cant init because some permission errors
+mkdir gitlab/data/git-data/repositories
+sudo chmod 2770 gitlab/data/git-data/repositories/
+
+# Permission problems are directcly related to Window partition

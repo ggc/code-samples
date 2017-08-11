@@ -1,0 +1,42 @@
+# "NOTE: Please allow a couple of minutes for the GitLab application to start."
+# "Port: 10080. user: root. default pw: 5iveL!fe or changed to 12345678"
+
+version: '2.1'
+services:
+    postgres:
+        image: postgres
+        container_name: postgresql-ci
+        environment:
+            - DB_NAME=gitlabhq_production
+        volumes: 
+            - ./postgres:/var/lib/postgresql
+    redis:
+        image: redis
+        container_name: redis-ci
+        volumes:
+            - ./redis:/data
+    gitlab:
+        image: gitlab/gitlab-ce
+        container_name: gitlab-ci
+        links:
+            - postgres
+            - redis
+        ports:
+            - "10443:443"
+            - "10022:22"
+            - "10080:80"
+        environment:
+            - GITLAB_PORT=10080
+            - GITLAB_SSH_PORT=10022
+        volumes:
+            - ./gitlab/config:/etc/gitlab
+            - ./gitlab/logs:/var/log/gitlab
+            - ./gitlab/data:/var/opt/gitlab
+
+# volumes:
+#     mongo:
+#     mysql_bi:
+
+# networks:
+#     fiware-network:
+#         external: true
