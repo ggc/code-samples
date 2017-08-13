@@ -3,6 +3,25 @@
 
 version: '2.1'
 services:
+    jenkins:
+        image: jenkins/jenkins:lts
+        container_name: jenkins
+        ports:
+            - "8080:8080"
+            - "50000:50000"
+        volumes:
+            - ./jenkins_home:/var/jenkins_home
+        networks:
+            dev-network:
+                ipv4_address: 172.18.0.2
+
+    jenkins-slave:
+        image: evarga/jenkins-slave
+        container_name: jenkins-slave
+        networks:
+            dev-network:
+                ipv4_address: 172.18.0.4
+
     postgres:
         image: postgres
         container_name: postgresql-ci
@@ -11,7 +30,7 @@ services:
         volumes: 
             - ./postgres:/var/lib/postgresql
     redis:
-        image: redis
+        image: redis:alpine
         container_name: redis-ci
         volumes:
             - ./redis:/data
@@ -32,11 +51,10 @@ services:
             - ./gitlab/config:/etc/gitlab
             - ./gitlab/logs:/var/log/gitlab
             - ./gitlab/data:/var/opt/gitlab
+        networks:
+            dev-network:
+                ipv4_address: 172.18.0.3
 
-# volumes:
-#     mongo:
-#     mysql_bi:
-
-# networks:
-#     fiware-network:
-#         external: true
+networks:
+    dev-network:
+        external: true
