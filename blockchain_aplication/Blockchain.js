@@ -14,7 +14,7 @@ function Blockchain() {
     }
 
     this.validChain = function validChain(chain) {
-        var lastBlock = chain[chain.length-1],
+        var lastBlock = chain[0],
             current = 1;
 
         while(current < chain.length) {
@@ -24,12 +24,10 @@ function Blockchain() {
             console.log('-----');
 
             if( block.previousHash != this.hash(lastBlock)) {
-                console.log('>>> chain not valid. previousHash doesnt match');
                 return false;
             }
 
-            if(!validProof(lastBlock.proof, block.proof)) {
-                console.log('>>> chain not valid. Proof not valid');
+            if(!this.validProof(lastBlock.proof, block.proof)) {
                 return false;
             }
 
@@ -41,49 +39,58 @@ function Blockchain() {
     };
     
     this.resolveConflicts = function resolveConflicts() {
-        var neighbours = this.nodes,
-            newChain = null,
-            maxLength = this.chain.length;
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            var neighbours = that.nodes,
+                newChain = null,
+                maxLength = that.chain.length,
+                requests = [];
 
-        for (node in neighbours) {
-            var req = {
-                "host": 'http://' + node.split(':')[0],
-                "path": "/chain",
-                "port": node.split(':')[1],
-                "method": "GET",
-                "headers": {
-                    "Accept": "application/json"
-                }
-
+            for (node in neighbours) {
+                var req = {
+                    "host": 'http://' + node.split(':')[0],
+                    "path": "/chain",
+                    "port": node.split(':')[1],
+                    "method": "GET",
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                };
+                requests.push(new Promise(function(resolve, reject) {
+                    var req = http.request('http://' + node + '/chain', function(res) {
+                        res.on('data', function(chunk) {
+                            var chunked = JSON.parse(chunk),
+                                length = chunked.length,
+                                chain = chunked.chain;
+console.log('>>> chunk values', length, chain, 'full chunk:', chunk);
+                            if (length > maxLength && that.validChain(chain)) {
+                                maxLength = length;
+                                newChain = chain;
+                                console.log('>>> New chain set');
+                            } 
+                        });
+                        res.on('end', () => {
+                            console.log('GET end. Resolving with new chain:', newChain);
+                            resolve(newChain);
+                        });
+                    });
+                    req.on('error', function() {
+                        resolve(null);
+                    })
+                    req.end();
+                }))
             };
 
-            var that = this;
-            var req = http.request('http://' + node + '/chain', function(res) {
-                res.on('data', function(chunk) {
-                    console.log(`BODY: ${chunk}`);
-                    var chunked = JSON.parse(chunk);
-                    var length = chunked.length,
-                        chain = chunked.chain;
-console.log('>>> Fields to check', length, maxLength);
-                    if (length > maxLength && that.validChain(chain)) {
-                        maxLength = length;
-                        newChain = chain;
-                        console.log('>>> New chain set');
-                    } 
-                });
-                res.on('end', () => {
-                    console.log('No more data in response.');
-                });
+            Promise.all(requests).then(function(values) {
+                for (newChain in values) {
+                    if(newChain != null) {
+                        this.chain = newChain;
+                        return resolve(true);
+                    }
+                }
+                return resolve(false);
             });
-            req.end();
-        };
-
-        if (newChain) {
-            this.chain = newChain;
-            return true;
-        }
-
-        return false;
+        })
     };
 
     this.lastBlock = function lastBlock() {
@@ -126,16 +133,14 @@ console.log('>>> Fields to check', length, maxLength);
     this.validProof = function validProof(lastProof, proof) {
         // Keeping it simple...
         var guess = sha256(lastProof + '' + proof);
-        if (guess.substr(0,4) == '0000') {
-            console.log('>>> proof', guess);
-        }
+        // if (guess.substr(0,4) == '0000') {
+        //     console.log('>>> proof', guess);
+        // }
         return guess.substr(0,4) == '0000';
     }
 
     this.hash = function hash(block) {
-        console.log('>>> hashing', block);
         var blockDigest = JSON.stringify(block);
-        console.log('>>> Ready to fail, sha256?', blockDigest);
         return sha256(blockDigest);
     }
 
@@ -218,23 +223,24 @@ server.post('/nodes/register', function(req, res, next) {
 });
 
 server.get('/nodes/resolve', function(req, res, next) {
-    var replaced = Blockchain.resolveConflicts(),
-        response;
-
-    if(replaced) {
-        response = {
-            "message": "Our chain was replaced",
-            "newChain": Blockchain.chain
+    var response;
+    Blockchain.resolveConflicts().then( replaced => {
+        console.log('>>> replaced?', replaced);
+        if(replaced) {
+            response = {
+                "message": "Our chain was replaced",
+                "newChain": Blockchain.chain
+            }
+        } else {
+            response = {
+                "message": "Our chain is authoritative",
+                "chain": Blockchain.chain
+            }
         }
-    } else {
-        response = {
-            "message": "Our chain is authoritative",
-            "chain": Blockchain.chain
-        }
-    }
+        res.send(200, response);
+    })
+});
 
-    res.send(200, response);
-})
 server.listen(process.env.PORT || 8000, function() {
     console.log('%s listening at %s', server.name, server.url);
 });
