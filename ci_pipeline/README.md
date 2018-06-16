@@ -5,6 +5,7 @@ Uses:
 - Jenkins (As container)
 - GitLab (As container)
 
+
 # Notes
 
 ## SSH
@@ -43,3 +44,5 @@ Copy Account Settings -> Account -> Private Token into Jenkins Gitlab plugin
 Basic tasks
 * Configure Gitlab and Test
 * Create node (Slave) and configure it to Main node
+
+Jenkins slave must have

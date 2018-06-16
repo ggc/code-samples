@@ -27,6 +27,7 @@
 
 			$('form').submit( function(e) {
 				e.preventDefault();
+				console.log('Socket emits text');
 				// var message = "Shit everywhere"; 
 				socket.emit('messages', $('#chat_input').val());
 			});

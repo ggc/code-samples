@@ -115,6 +115,8 @@ app.get('/securedPath', ensureAuthenticated, function(req, res) {
   res.send('<h1>Success!</p>');
 });
 
+
+
 app.listen(process.env.PORT || 3000, function() {
   console.log("Listening at " + (process.env.PORT || 3000));
 });
