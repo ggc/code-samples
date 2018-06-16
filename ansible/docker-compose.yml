@@ -1,0 +1,38 @@
+version: '2'
+services:
+    centos1:
+        image: centos:7
+        command: /sbin/init
+        ports:
+            - "22"
+        networks:
+            ansible_net:
+                ipv4_address: 172.19.1.11
+    # centos2:
+    #     image: centos:7
+    #     networks:
+    #         ansible_net:
+    #             ipv4_address: 172.19.1.12
+    # centos3:
+    #     image: centos:7
+    #     networks:
+    #         ansible_net:
+    #             ipv4_address: 172.19.1.13
+    # ubuntu1:
+    #     image: ubuntu:14.04
+    #     networks:
+    #         ansible_net:
+    #             ipv4_address: 172.19.1.21
+    # ubuntu2:
+    #     image: ubuntu:14.04
+    #     networks:
+    #         ansible_net:
+    #             ipv4_address: 172.19.1.22
+
+networks:
+    ansible_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.19.1.0/16
