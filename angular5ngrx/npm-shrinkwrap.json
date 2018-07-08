@@ -1,0 +1,81 @@
+{
+  "name": "angular5ngrx",
+  "version": "0.0.0",
+  "dependencies": {
+    "@angular/animations": {
+      "version": "6.0.7",
+      "from": "@angular/animations@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/animations/-/animations-6.0.7.tgz"
+    },
+    "@angular/common": {
+      "version": "6.0.7",
+      "from": "@angular/common@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/common/-/common-6.0.7.tgz"
+    },
+    "@angular/compiler": {
+      "version": "6.0.7",
+      "from": "@angular/compiler@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/compiler/-/compiler-6.0.7.tgz"
+    },
+    "@angular/core": {
+      "version": "6.0.7",
+      "from": "@angular/core@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/core/-/core-6.0.7.tgz"
+    },
+    "@angular/forms": {
+      "version": "6.0.7",
+      "from": "@angular/forms@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/forms/-/forms-6.0.7.tgz"
+    },
+    "@angular/http": {
+      "version": "6.0.7",
+      "from": "@angular/http@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/http/-/http-6.0.7.tgz"
+    },
+    "@angular/platform-browser": {
+      "version": "6.0.7",
+      "from": "@angular/platform-browser@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-6.0.7.tgz"
+    },
+    "@angular/platform-browser-dynamic": {
+      "version": "6.0.7",
+      "from": "@angular/platform-browser-dynamic@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/platform-browser-dynamic/-/platform-browser-dynamic-6.0.7.tgz"
+    },
+    "@angular/router": {
+      "version": "6.0.7",
+      "from": "@angular/router@>=6.0.3 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@angular/router/-/router-6.0.7.tgz"
+    },
+    "@ngrx/store": {
+      "version": "6.0.1",
+      "from": "@ngrx/store@>=6.0.1 <7.0.0",
+      "resolved": "https://registry.npmjs.org/@ngrx/store/-/store-6.0.1.tgz"
+    },
+    "@ngxs/store": {
+      "version": "3.1.4",
+      "from": "@ngxs/store@>=3.1.4 <4.0.0",
+      "resolved": "https://registry.npmjs.org/@ngxs/store/-/store-3.1.4.tgz"
+    },
+    "core-js": {
+      "version": "2.5.7",
+      "from": "core-js@>=2.5.4 <3.0.0",
+      "resolved": "https://registry.npmjs.org/core-js/-/core-js-2.5.7.tgz"
+    },
+    "rxjs": {
+      "version": "6.2.1",
+      "from": "rxjs@>=6.0.0 <7.0.0",
+      "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-6.2.1.tgz"
+    },
+    "tslib": {
+      "version": "1.9.3",
+      "from": "tslib@>=1.9.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.9.3.tgz"
+    },
+    "zone.js": {
+      "version": "0.8.26",
+      "from": "zone.js@>=0.8.26 <0.9.0",
+      "resolved": "https://registry.npmjs.org/zone.js/-/zone.js-0.8.26.tgz"
+    }
+  }
+}
