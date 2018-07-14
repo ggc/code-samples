@@ -1,18 +1,20 @@
 import React from 'react';
-import { StyleSheet, TextInput, View, Button } from 'react-native';
+import { StyleSheet, TextInput, View, Button, Alert, Text } from 'react-native';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            form: {
-                username: '',
-                password: ''
-            }
+            username: '',
+            password: ''
         };
+        this._onLogin = this._onLogin.bind(this);
     }
-    onLogin(ev) {
-        console.log('Login in...', ev);
+
+    _onLogin() {
+        Alert.alert('Successful logged in', 'Now get the fuck out of here!');
+        console.log('[LOG] this in _onLogin', this);
+        this.props.navigation.navigate('Home');
     }
 
     render() {
@@ -21,21 +23,20 @@ export default class LoginPage extends React.Component {
                 <TextInput
                     style={styles.textInput}
                     placeholder="Username"
-                    onChangeText={(text) => this.setState({
-                        form: {
+                    onChangeText={(text) => {
+                        console.log('[LOG] this inline', this);
+                        return this.setState({
                             username: text
-                        }
-                    })} />
+                        })
+                    }} />
                 <TextInput
                     style={styles.textInput}
                     placeholder="Password"
                     onChangeText={(text) => this.setState({
-                        form: {
-                            password: text
-                        }
+                        password: text
                     })} />
                 <Button
-                    onPress={this.onLogin}
+                    onPress={this._onLogin}
                     title="Login"
                     color="#61f298" />
             </View>
