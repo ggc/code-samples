@@ -1,17 +1,20 @@
+# Workspace configs
 *.code-workspace
 
-# expo
+# Build artifacts
+/android
+/ios
 .expo/
-
-# dependencies
 /node_modules
 
-# misc
+# For security
+package-lock.json
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# Misc
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
