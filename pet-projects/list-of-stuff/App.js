@@ -20,6 +20,7 @@ export default class App extends React.Component {
         const date = new Date();
         return (
                 <View style={styles.container}>
+                    <Text style={styles.lightBlue}>Header</Text>
                     <Text>{date.toString()}</Text>
                     <Text>Open up App.js to start working on your app!</Text>
                     <Text>Live reload ON!.</Text>
@@ -37,4 +38,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    lightBlue: {
+        backgroundColor: '#335599',
+        width: 400,
+        paddingTop: 48
+    }
 });
