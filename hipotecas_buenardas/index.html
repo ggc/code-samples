@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Prestamos hipotecarios</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Options -->
+        <p>Capital:</p>
+        <input v-model="capital">
+
+        <p>Meses: {{ meses }}</p>
+        <input v-model="meses">
+
+        <p>Interes: {{ interes }}</p>
+        <input v-model="interes">
+
+        <p>Amortizaciones (each line like: &lt;month&gt;:&lt;qty&gt;)
+        </p>
+        <textarea v-model="amortizaciones" style="width: 400px; height: 200px;"></textarea>
+
+        <!-- Results -->
+        <p>Total intereses: {{ totalIntereses }}</p>
+
+        <p>Cuota: {{ cuota }}</p>
+
+        <button @click="update">Update</button>
+
+        <div id="interes_graph"></div>
+        <div id="capital_graph"></div>
+
+        <!-- Table -->
+        <table style="width:100%">
+            <tr>
+                <th>Year</th>
+                <th>Starting Intereses</th>
+                <th>Capital pendiente</th>
+                <th>Amortizado</th>
+            </tr>
+            <tr v-for="(pago, index) in pagos">
+                <td>{{ index + 1 }}</td>
+                <td>{{ pago.intereses }}</td>
+                <td>{{ pago.capitalPendiente }}</td>
+                <td>{{ pago.amortizado }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="loan-calcs.js"></script>
+    <script src="d3-representation.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

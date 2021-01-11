@@ -1,0 +1,11 @@
+tr:nth-child(6n+1) {
+    background: #ded4ff;
+}
+
+tr:nth-child(12n+1) {
+    background: #ff97d7;
+}
+
+tr:first-child {
+    background: #568bff;
+}
